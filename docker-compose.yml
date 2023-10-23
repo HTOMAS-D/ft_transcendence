@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres
+    container_name: database
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - 5432:5432
+    volumes:
+      - "./postgresql/data:/var/lib/postgresql/data"
+    networks:
+      - cards
+  
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - cards
+  
+  django:
+    build:
+      context: ./Tumo_cards
+    container_name: django
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - 8042:8042
+    networks:
+      - cards
+    volumes: 
+      - './Tumo_cards:/var/www/html'
+
+networks:
+  cards:
+    driver: bridge
