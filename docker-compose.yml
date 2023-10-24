@@ -13,7 +13,7 @@ services:
     volumes:
       - "./postgresql/data:/var/lib/postgresql/data"
     networks:
-      - cards
+      - transcendence
   
   adminer:
     image: adminer
@@ -22,11 +22,11 @@ services:
     ports:
       - 8080:8080
     networks:
-      - cards
+      - transcendence
   
   django:
     build:
-      context: ./Tumo_cards
+      context: ./django
     container_name: django
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -35,10 +35,10 @@ services:
     ports:
       - 8042:8042
     networks:
-      - cards
+      - transcendence
     volumes: 
-      - './Tumo_cards:/var/www/html'
+      - './django:/var/www/html'
 
 networks:
-  cards:
+  transcendence:
     driver: bridge
