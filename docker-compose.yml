@@ -38,6 +38,29 @@ services:
       - transcendence
     volumes: 
       - './django:/var/www/html'
+  
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASS}
+    volumes:
+      - './grafana:/var/lib/grafana'
+      - './grafana/provisioning:/etc/grafana/provisioning'
+    ports:
+      - 3000:3000
+    networks:
+      - transcendence
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - './prometheus:/etc/prometheus'
+    ports:
+      - 9090:9090
+    networks:
+      - transcendence
 
 networks:
   transcendence:
