@@ -8,3 +8,9 @@ datasources:
     jsonData:
       httpMethod: GET
       tlsSkipVerify: true
+
+# dashboards:
+#   - name: Dashboard
+#     file: /etc/grafana/provisioning/dashboards/1_dashboard.json
+#     folder: ""
+#     overwrite: true
