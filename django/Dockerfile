@@ -2,6 +2,11 @@ FROM python:3.12-rc
 
 WORKDIR /var/www/html
 
+RUN pip install --upgrade pip
+
+COPY ./requirements.txt .
+RUN pip install -r requirements.txt
+
 COPY . .
 RUN chmod 777 *
 # COPY entrypoint_django.sh .

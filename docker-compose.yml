@@ -56,8 +56,8 @@ services:
     image: prom/prometheus
     container_name: prometheus
     volumes:
-      - './prometheus:/etc/prometheus'
-      - './prometheus/prometheus.yml:/etc/prometheus/'
+      - './prometheus/:/etc/prometheus/'
+      # - './prometheus/prometheus.yml:/etc/prometheus/'
     ports:
       - 9090:9090
     networks:
