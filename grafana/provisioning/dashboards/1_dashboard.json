@@ -1,0 +1,134 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Application Metrics Dashboard",
+    "panels": [
+      {
+        "id": 1,
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 6,
+          "h": 5
+        },
+        "title": "HTTP Responses",
+        "type": "table",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "django_http_responses_total_by_status_total",
+            "format": "table"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "gridPos": {
+          "x": 6,
+          "y": 0
+          ,
+          "w": 6,
+          "h": 5
+        },
+        "title": "Request Latency",
+        "type": "histogram",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "django_http_requests_latency_including_middlewares_seconds",
+            "format": "time_series"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "gridPos": {
+          "x": 0,
+          "y": 5,
+          "w": 6,
+          "h": 5
+        },
+        "title": "Database Query Duration",
+        "type": "histogram",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "django_db_query_duration_seconds",
+            "format": "time_series"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "gridPos": {
+          "x": 6,
+          "y": 5,
+          "w": 6,
+          "h": 5
+        },
+        "title": "Memory Usage",
+        "type": "gauge",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "process_virtual_memory_bytes",
+            "format": "time_series"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "gridPos": {
+          "x": 0,
+          "y": 10,
+          "w": 6,
+          "h": 5
+        },
+        "title": "Process Information",
+        "type": "gauge",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "process_cpu_seconds_total",
+            "format": "time_series"
+          }
+        ]
+      }
+    ],
+    "schemaVersion": 27,
+    "version": 2,
+    "links": [],
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    }
+  }
+  
