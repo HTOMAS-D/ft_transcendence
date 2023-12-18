@@ -97,12 +97,8 @@ Module points count 5 / 7
 ## Web
 
 - Use Framework as backend (Django). 1 point
-    Constraints:
-        -
 
 - Use a Front-end framework or toolkit (Bootstrap). 0.5 points.
-    Constraints:
-        -
 
 - Use database for backend (Postgres).  0.5 points.
 
