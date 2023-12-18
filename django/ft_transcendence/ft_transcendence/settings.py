@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import logging
+from pythonjsonlogger import jsonlogger
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_prometheus',
+    'main',
 ]
 
 MIDDLEWARE = [
@@ -130,3 +133,32 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ROOT_URLCONF = "ft_transcendence.urls"
+
+
+##LOGGING setup to log onto logstash
+ 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'logstash': {
+            'class': 'logstash.TCPLogstashHandler',
+            'host': 'logstash',  # This should be the service name in your Docker Compose file
+            'port': 5044,         # Use the correct port configured in your Logstash setup
+            'version': 1,
+            'message_type': 'logstash',
+            'fqdn': False,
+            'tags': ['django'],
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['logstash'],
+            'level': 'INFO',  # Adjust the log level as needed
+            'propagate': True,
+        },
+    },
+}
+
+
+ELASTICSEARCH_HOST = 'http://elasticsearch:9200'
