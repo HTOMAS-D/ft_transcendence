@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_prometheus',
     'main',
+    'account',
 ]
 
 MIDDLEWARE = [
