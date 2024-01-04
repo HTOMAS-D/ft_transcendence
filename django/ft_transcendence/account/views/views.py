@@ -1,11 +1,20 @@
-from django.shortcuts import render
-from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic.edit import CreateView
-from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from ..forms import CreateUserForm
 
 def loginView(request):
-    return render(request, "account/login.html")
+    registerForm = CreateUserForm()
+    
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            
+        
+    context = {
+        'registerForm': registerForm,
+        }
+    return render(request, "account/login.html", context)
 
 
 def logoutView(request):

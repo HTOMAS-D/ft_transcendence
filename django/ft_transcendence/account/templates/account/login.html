@@ -1,15 +1,48 @@
 {% extends "account/base.html" %}
 {% block title %}
 <title>Login</title>
+<style>
+    #register-form{
+        display: none;
+    }
+</style>
+<script>
+    function showPage(page){
+        document.querySelectorAll('form').forEach(div => {
+            div.style.display = 'none';
+        })
+        document.querySelector(`#${page}`).style.display = 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+        document.querySelectorAll('button').forEach(button =>{
+            button.onclick = function(){
+                showPage(this.dataset.page)
+            }
+        });
+    })
+
+</script>
 {% endblock %}
 
 {% block body %}
-<div id ="login">
-    <h1>login page here</h1>
-</div>
-<div id="register">
-    <h1>Register</h1>
-</div>
+<h1>Login Page!!!</h1>
+<button data-page="login-form">Login</button>
+<button data-page="register-form">Register</button>
 
-<h1>Login!!!</h1>
+
+<form id ="login-form" method="POST" action="">
+    <h1>login-form goes here</h1>
+</form>
+
+
+<form id="register-form" method="POST" action="">
+    {% csrf_token %}
+        <h1>Register</h1>
+        {% for field in registerForm %}
+            {{field.label}}
+            {{field}}
+        {% endfor %}
+        <input type="submit" name="Create">
+</form>
 {% endblock %}
