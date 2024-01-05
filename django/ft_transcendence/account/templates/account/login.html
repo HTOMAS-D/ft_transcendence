@@ -88,5 +88,8 @@
         <p></p>
         <input class="btn btn-primary" id="register-user" type="button" name="Create" value="Create">
 </form>
+{% for message in messages %}
+    <p>{{message}}</p>
+{% endfor %}
 
 {% endblock %}
