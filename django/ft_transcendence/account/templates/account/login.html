@@ -43,7 +43,7 @@
                     form.reset();
                     errorContainer.innerHTML = '';
                     window.location.href='/login'
-                } else{
+                } else {
                     console.log("errors found in the form", data.errors);
                     errorContainer.innerHTML = data.errors.join('<br>');
                 }
@@ -53,14 +53,49 @@
             })
         }
 
+        function submitLogin(){
+            console.log('loggin in the user');
+            const form = document.getElementById('login-form');
+            const loginErrorContainer = document.getElementById('login-error-container');
+
+            fetch('/do-login/', {
+                method: 'POST',
+                body: new FormData(form),
+            })
+            .then(res => res.json())
+            .then(data =>{
+                console.log('got response', data);
+                loginErrorContainer.innerHTML = '';
+                if(data.status === 'success'){
+                    form.reset();
+                    window.location.href = '/'
+                } else {
+                    console.log('Errors ocurred during login', data.errors)
+                    loginErrorContainer.innerHTML = data.errors.join('<br>');
+                }
+
+            })
+            .catch(error => {
+                console.log('Error: ', error);
+                loginErrorContainer.innerHTML = 'Invalid Credentials';
+            })
+        }
+
         document.getElementById('register-user').addEventListener('click', function (event){
             event.preventDefault();
             submitUserForm();
+        });
+
+        document.getElementById('login-user').addEventListener('click', function(event){
+            event.preventDefault();
+            submitLogin();
         });
     })
 
 </script>
 {% endblock %}
+
+
 
 {% block body %}
 <h1>Login Page!!!</h1>
@@ -69,7 +104,15 @@
 
 
 <form id ="login-form" method="POST" action="">
-    <h1>login-form goes here</h1>
+    <h1>Login</h1>
+    {% csrf_token %}
+    <div id="login-error-container" class="alert alert-danger">
+    </div>
+    <label for="username">Username: </label>
+    <input type="text" name="username" placeholder="Username">
+    <label for="password">Password: </label>
+    <input type="password" name="password" placeholder="Password">
+    <input class="btn btn-primary" id="login-user" type="button" name="Submit" value="Submit">
 </form>
 
 
@@ -78,6 +121,7 @@
     <h1 id="register-h1">Register</h1>
     <div id="error-container" class="alert alert-danger">
     </div>
+
         {% for field in registerForm %}
         <div class="form-group">
             {{field.label}}
@@ -88,8 +132,7 @@
         <p></p>
         <input class="btn btn-primary" id="register-user" type="button" name="Create" value="Create">
 </form>
-{% for message in messages %}
-    <p>{{message}}</p>
-{% endfor %}
-
+    {% for message in messages %}
+        <p>{{message}}</p>
+    {% endfor %}
 {% endblock %}

@@ -6,6 +6,6 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 
-def index(request):
+def homepage(request):
     logger.info('!!! info test message !!!')
-    return HttpResponse('Hello!')
+    return render(request, 'main/homepage.html')
