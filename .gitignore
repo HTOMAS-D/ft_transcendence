@@ -1,2 +1,11 @@
-*.pyc
 postgresql
+django/ft_transcendence/account/__pycache__/urls.cpython-312.pyc
+django/ft_transcendence/account/views/__pycache__/views.cpython-312.pyc
+django/ft_transcendence/ft_transcendence/__pycache__/settings.cpython-312.pyc
+django/ft_transcendence/ft_transcendence/__pycache__/urls.cpython-312.pyc
+django/ft_transcendence/db.sqlite3
+django/venv/
+django/ft_transcendence/account/__pycache__/forms.cpython-312.pyc
+django/ft_transcendence/main/__pycache__/
+django/ft_transcendence/main/migrations/__pycache__/
+django/ft_transcendence/main/views/__pycache__/
