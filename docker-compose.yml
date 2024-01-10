@@ -62,7 +62,7 @@ services:
   #   ports:
   #     - 9090:9090
   #   networks:
-      # - transcendence
+  #     - transcendence
 
   # elasticsearch:
   #   container_name: elasticsearch

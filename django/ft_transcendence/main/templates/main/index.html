@@ -43,6 +43,7 @@
       </button>
       <div class="container">
           <div class="navbar-brand mx-auto display-2">Transcendence</div>
+          <span style="color: white; margin-right: 20px;">Hello, {{request.user}}</span>
           <span>{% csrf_token %} <button id="logout-user" type="button" class="btn btn-light">Logout</button> </span>
       </div>
   </nav>

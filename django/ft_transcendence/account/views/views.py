@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from ..forms import CreateUserForm
 
 def loginView(request):
+    if request.user.is_authenticated:
+        return redirect('main:homepage')
     registerForm = CreateUserForm()
         
     context = {
@@ -14,6 +16,8 @@ def loginView(request):
 
 
 def doLoginView(request):
+    if request.user.is_authenticated:
+        return redirect('main:homepage')
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -39,9 +43,9 @@ def doLogoutView(request):
     
 
 
-
-
 def registerView(request):
+    if request.user.is_authenticated:
+        return redirect('main:homepage')
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
 
