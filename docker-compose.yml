@@ -3,43 +3,45 @@ version: '3.8'
 services:
   database:
     image: postgres
-    container_name: database
+    container_name: db
+    command: -p ${DB_PORT}
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      ELASTICSEARCH_HOSTS: ${ELASTICSEARCH_HOST}
-
+      - PGDATA=/data
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      # ELASTICSEARCH_HOSTS: ${ELASTICSEARCH_HOST}
     ports:
-      - 5432:5432
+      - ${DB_PORT}:${DB_PORT}
     volumes:
-      - "./postgresql/data:/var/lib/postgresql/data"
+      - ${DB_DATA}:/data"
     networks:
       - transcendence
   
-  adminer:
-    image: adminer
-    container_name: adminer
-    restart: always
-    ports:
-      - 8080:8080
-    networks:
-      - transcendence
-  
-  django:
+  ### Backend containers (prefix with be_)
+  be_main:
     build:
       context: ./django
-    container_name: django
+      args:
+        - APP_NAME=ft_transcendence
+    container_name: be_main
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=${DB_PORT}
+      - PORT=${BE_PORT}
     ports:
-      - 8042:8042
+      - ${BE_PORT}:${BE_PORT}
     networks:
       - transcendence
     volumes: 
-      - './django:/var/www/html'
+      - ./django/ft_transcendence:/code
+      - ./logs:/logs
+    restart: on-failure
+    depends_on:
+      - database
   
   # grafana:
   #   image: grafana/grafana
