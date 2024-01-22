@@ -17,7 +17,7 @@ services:
       - ${DB_DATA}:/data"
     networks:
       - transcendence
-  
+
   ### Backend containers (prefix with be_)
   be_main:
     build:
@@ -36,13 +36,13 @@ services:
       - ${BE_PORT}:${BE_PORT}
     networks:
       - transcendence
-    volumes: 
+    volumes:
       - ./django/ft_transcendence:/code
-      - ./logs:/logs
+      - ${LOG_DIR}:/logs
     restart: on-failure
     depends_on:
       - database
-  
+
   # grafana:
   #   image: grafana/grafana
   #   container_name: grafana

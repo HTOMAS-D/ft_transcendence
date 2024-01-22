@@ -21,8 +21,6 @@ COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 RUN rm requirements.txt
 
-RUN echo $_APP_NAME $APP_NAME
-
 ### ENTRYPOINT:
 # We will use gunicorn as a webserver. If you want to extra options for a
 # certain container you can use the 'GUNICORN_CMD_ARGS' env variable

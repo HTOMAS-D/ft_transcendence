@@ -1,6 +1,7 @@
 # Names for our postgres data directory
 postgres_data
 postgres
+logs
 
 .nfs*
 
