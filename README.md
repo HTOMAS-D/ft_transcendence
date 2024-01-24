@@ -1,5 +1,31 @@
 # Base Requirements:
 
+## Setting up:
+
+To setup this project you must first clone it from git
+```bash
+git clone https://github.com/HTOMAS-D/ft_transcendence.git transcendence
+```
+
+After this we need to setup the environment variables. They are located in `.env.example` and you can copy this over to `.env` and fill in the variables. Some might already be filled out with default values and can be overwritten.
+```bash
+cp .env.example .env
+```
+
+Optionally, if you want to work on the backend you might want to setup a venv for python. The following commands will install venv, create a virtual environment and lastly active the virtual environment.
+```
+pip install venv
+python -m venv django
+source django/bin/active
+```
+
+Now that everything is set up we can run the docker containers to get everything started.
+```
+docker compose up -d
+```
+
+-----
+
 Website:
 
 - Frontend should be done using vanilla Javascript.
@@ -71,7 +97,7 @@ To get 100% on the project we are required to complete a minimum of 7 Major modu
     - Major module - Implement Two-Factor Authentication (2FA) and JWT - 1 point.
 
 - Devops:
-    - Major module - Infrastructure Setup for Log Management - 1 point. 
+    - Major module - Infrastructure Setup for Log Management - 1 point.
     - Minor module - Monitoring system - 0.5 point.
     - Major module - Designing the Backend as Microservices - 1 point.
 
