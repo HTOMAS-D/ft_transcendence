@@ -20,8 +20,8 @@ from django_prometheus import exports
 # import django_prometheus
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('', include('django_prometheus.urls')),
     path('', include('main.urls')),
-    path('', include('account.urls')),
+    # path('', include('account.urls')),
 ]

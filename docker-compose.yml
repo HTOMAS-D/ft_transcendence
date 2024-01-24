@@ -33,11 +33,12 @@ services:
       - POSTGRES_PORT=${DB_PORT}
       - PORT=${BE_PORT}
     ports:
-      - ${BE_PORT}:${BE_PORT}
+      - ${POSTGRES_PORT}:${BE_PORT}
     networks:
       - transcendence
     volumes:
       - ./django/ft_transcendence:/code
+      - ./django/share:/share
       - ${LOG_DIR}:/logs
     restart: on-failure
     depends_on:
