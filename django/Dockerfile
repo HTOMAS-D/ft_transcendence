@@ -37,7 +37,8 @@ ENV PYTHONPATH "${PYTHONPATH}:/share"
 
 ENTRYPOINT ["sh", "-c", "gunicorn $_APP_NAME.wsgi\
                         --reuse-port\
-                        --reload"]
+                        --reload\
+                        --log-level=info"]
 
                         # --log-file /logs/gunicorn-error.log\
                         # --capture-output"]
