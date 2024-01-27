@@ -6,8 +6,8 @@ class User(models.Model):
     intra_id = models.IntegerField(unique=True, null=True)
     # Sha256 of password stored as hexadecimal, might be null if logged in via 42 OAUTH
     password = models.CharField(max_length=64)
-    email = models.CharField(max_length=128)
-    username = models.CharField(max_length=16)
+    email = models.CharField(max_length=128, unique=True)
+    username = models.CharField(max_length=16, unique=True)
     totp_secret = models.CharField(max_length=16) # Base 32 random 80 bit string
 
     class Meta:

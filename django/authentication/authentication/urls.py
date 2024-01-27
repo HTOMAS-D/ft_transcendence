@@ -16,8 +16,11 @@ Including another URLconf
 """
 from django.urls import path
 from oauth.views import oauth_test, oauth_callback
+from login.views import login_test, authenticate_user
 
 urlpatterns = [
     path('oauth/test', oauth_test),
     path('oauth/callback', oauth_callback),
+    path('login/test', login_test),
+    path('login/', authenticate_user)
 ]
