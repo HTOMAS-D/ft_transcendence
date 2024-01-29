@@ -18,13 +18,15 @@ import time
 ENCR_METHOD="HS256"
 
 # Creates a session, returns a JWT
-def create(user: User, t: 'session' | 'totp' | 'temp') -> str:
+def create(user: User,
+           t: 'session' | 'totp' | 'temp',
+           session_length : int = int(os.environ.get("SESSION_LENGTH", 3600))) -> str:
     jwt_secret = os.environ.get('JWT_SECRET')
     data = {
         'ownerId' : user.id,
         'type' : t,
         'iat':  int(time.time()),
-        'exp': int(time.time()) + int(os.environ.get("SESSION_LENGTH", 3600)),
+        'exp': int(time.time()) + session_length,
     }
     return jwt.encode(data, os.environ.get("JWT_SECRET"), ENCR_METHOD)
 
