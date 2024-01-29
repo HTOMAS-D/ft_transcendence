@@ -60,6 +60,9 @@ services:
       - INTRA_ID=${INTRA_ID}
       - INTRA_SECRET=${INTRA_SECRET}
       - INTRA_REDIRECT_URI=${INTRA_REDIRECT_URI}
+
+      - JWT_SECRET=${JWT_SECRET}
+      - SESSION_LENGTH=${SESSION_LENGTH}
     ports:
       - ${BE_AUTH_PORT}:${BE_AUTH_PORT}
     networks:
