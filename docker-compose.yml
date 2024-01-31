@@ -6,7 +6,7 @@ services:
     container_name: db
     command: -p ${DB_PORT}
     environment:
-      - PGDATA=/data
+      - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
@@ -14,7 +14,7 @@ services:
     ports:
       - ${DB_PORT}:${DB_PORT}
     volumes:
-      - ${DB_DATA}:/data"
+      - ${DB_DATA}:/var/lib/postgresql/data"
     networks:
       - transcendence
 
