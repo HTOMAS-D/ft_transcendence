@@ -8,7 +8,7 @@ import time
 # Session JWT                                                                  #
 #                                                                              #
 # ownerId : user.id                                                            #
-# type: string | 'session', 'totp', 'temp'                                     #
+# type: string : 'session', 'totp', 'temp'                                     #
 # iat: number, ISO 8601                                                        #
 # exp: number, ISO 8601                                                        #
 #                                                                              #
@@ -19,7 +19,7 @@ ENCR_METHOD="HS256"
 
 # Creates a session, returns a JWT
 def create(user: User,
-           t: 'session' | 'totp' | 'temp',
+           t: str,
            session_length : int = int(os.environ.get("SESSION_LENGTH", 3600))) -> str:
     jwt_secret = os.environ.get('JWT_SECRET')
     data = {
@@ -33,9 +33,9 @@ def create(user: User,
 # Validates a session token (JWT)
 # You can optionally provide a type to validate that the JWT is a certain type
 # If it's an invalid session it will return None, otherwise it will return the user id
-def validate(jwt: str, t: 'session' | 'totp' | 'temp' | '' = '') -> User:
+def validate(token: str, t: str = '') -> User:
     try:
-        data = jwt.decode(jwt, os.environ.get("JWT_SECRET"), ENCR_METHOD)
+        data = jwt.decode(token, os.environ.get("JWT_SECRET"), ENCR_METHOD)
         if (time.time() > data['exp'] or (t != '' and data['type'] != t)):
             return None
         try:
@@ -44,10 +44,15 @@ def validate(jwt: str, t: 'session' | 'totp' | 'temp' | '' = '') -> User:
             return None
     except:
         return None
-    return
+
+def decode(token) -> any:
+    try:
+        return jwt.decode(token, os.environ.get("JWT_SECRET"), ENCR_METHOD)
+    except:
+        return None
 
 # Validates a totp key
-def validate_totp(user: User, key : string):
+def validate_totp(user: User, key : str) -> bool:
     totp = pyotp.TOTP(user.totp_secret)
     return totp.verify(key)
 
