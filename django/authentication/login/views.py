@@ -35,6 +35,13 @@ def login_test(request):
                         <input type="password" class="form-control" id="password" name="password" required>\
                     </div>\
                     <button type="button" class="btn btn-primary" onclick="submitLoginForm()">Login</button>\
+                <h2 class="text-center mb-4">Totp Form</h2>\
+                </form>\
+                <form id="totpForm" class="form-inline">\
+                <div class="form-group flex-grow-1">\
+                    <input type="text" class="form-control w-100" id="totp" name="usernameEmail" required>\
+                </div>\
+                <button type="button" class="btn btn-primary ml-2" onclick="submitTotpForm()">Login</button>\
                 </form>\
             </div>\
         </div>\
