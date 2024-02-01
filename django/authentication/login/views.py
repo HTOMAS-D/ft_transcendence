@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from models.models import User
+from general.errors import errorResponse, errorInvalidMethod
 import sessions
 import datetime
 import json
@@ -78,13 +79,6 @@ def login_test(request):
     '
     return HttpResponse(res)
 
-def errorResponse(code, message) -> HttpResponse:
-    res = HttpResponse()
-    res.status_code = code
-    res.content = f"{{'error':'{message}'}}"
-    res['Content-Type'] = 'application/json'
-    return res
-
 # Authenticates a user via username/password
 def authenticate_user(request):
     match(request.method):
@@ -161,7 +155,8 @@ def authenticate_user(request):
             res = HttpResponse()
             res.status_code = 200
             res.set_cookie('session', st, expires=datetime.datetime.fromtimestamp(st_d['exp']), httponly=True)
+            res.delete_cookie('session_totp')
             return res
 
         case _:
-            return  errorResponse(405, 'Invalid method')
+            return errorInvalidMethod()
