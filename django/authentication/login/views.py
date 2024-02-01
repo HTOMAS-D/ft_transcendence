@@ -38,12 +38,13 @@ def login_test(request):
                     <button type="button" class="btn btn-primary" onclick="submitLoginForm()">Login</button>\
                 <h2 class="text-center mb-4">Totp Form</h2>\
                 </form>\
-                <form id="totpForm" class="form-inline">\
+                <form id="totpForm" class="form-inline mb-2">\
                 <div class="form-group flex-grow-1">\
                     <input type="text" class="form-control w-100" id="totp" name="totp" required>\
                 </div>\
                 <button type="button" class="btn btn-primary ml-2" onclick="submitTotpForm()">Verify</button>\
                 </form>\
+                <button type="button" class="btn btn-primary w-100" onclick="updateSession()">Update Session</button>\
             </div>\
         </div>\
     </div>\
@@ -85,6 +86,20 @@ def login_test(request):
                     "Content-Type": "application/json",\
                 },\
                 body: JSON.stringify(jsonData),\
+            })\
+            .then(data => {\
+                console.log("Success:", data.text());\
+            })\
+            .catch((error) => {\
+                console.error("Error:", error);\
+            });\
+        }\
+        function updateSession(){\
+            fetch("/login/", {\
+                method: "PATCH",\
+                headers: {\
+                    "Content-Type": "application/json",\
+                },\
             })\
             .then(data => {\
                 console.log("Success:", data.text());\
@@ -143,10 +158,6 @@ def authenticate_user(request):
             return res
 
         case 'PATCH': # Used for updating temp session once a totp key has been obtained
-            # Validate input data
-            data = json.loads(request.body)
-            if ('totp_key' not in data):
-                return errorResponse(400, 'Invalid body')
             # Check if required cookies are present
             if (not request.COOKIES.get('session') or not request.COOKIES.get('session_totp')):
                 return errorResponse(400, 'Missing session cookie(s)')
@@ -164,14 +175,14 @@ def authenticate_user(request):
 
             u = None
             try:
-                u = User.objects.get(id=s_d.ownerId)
+                u = User.objects.get(id=s_d['ownerId'])
             except:
                 res = errorResponse(401, 'Invalid session cookie(s)')
                 res.delete_cookie('session_totp') # make sure the session totp is invalidated
                 return res
 
             st = sessions.create(u, 'session')
-            st_d = sessions.decode(u, st)
+            st_d = sessions.decode(st)
 
             res = HttpResponse()
             res.status_code = 200
