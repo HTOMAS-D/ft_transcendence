@@ -35,7 +35,7 @@ def oauth_callback(request):
     code = request.GET.get('code')
 
     if (not code):
-        return (HttpResponse('NOT OK'))
+        return errorResponse(400, 'No code provided')
 
     u = None
     try:
