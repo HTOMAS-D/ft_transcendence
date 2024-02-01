@@ -3,6 +3,7 @@ import os
 import jwt
 import pyotp
 import time
+import logging
 
 ################################################################################
 # Session JWT                                                                  #
@@ -39,7 +40,7 @@ def validate(token: str, t: str = '') -> User:
         if (time.time() > data['exp'] or (t != '' and data['type'] != t)):
             return None
         try:
-            return User.objects.get({id: data['ownerId']})
+            return User.objects.get(id=data['ownerId'])
         except:
             return None
     except:

@@ -1,8 +1,11 @@
 from django.http import HttpResponse
 from models.models import User
-from general import errorResponse, errorInvalidMethod
+from general.errors import errorResponse, errorInvalidMethod
 import json
 import sessions
+import logging
+import jwt
+import datetime
 
 def authenticate_totp(request):
     match(request.method):
@@ -10,7 +13,7 @@ def authenticate_totp(request):
             data = None
             totp_token = None
             try:
-                data = json.loads(request.text())
+                data = json.loads(request.body)
                 totp_token = data['totp_token']
             except:
                 return errorResponse(400, 'Invalid body')
@@ -28,9 +31,11 @@ def authenticate_totp(request):
             if (not sessions.validate_totp(u, totp_token)):
                 return errorResponse(401, 'Invalid totp token')
 
-            res = HttpResponse
+            res = HttpResponse()
             res.status_code = 200
-            res.set_cookie(sessions.create(u, 'totp', 60))
+            tjwt = sessions.create(u, 'totp', 60)
+            tjwt_d = sessions.decode(tjwt)
+            res.set_cookie('session_totp', tjwt, expires=datetime.datetime.fromtimestamp(tjwt_d['exp']), httponly=True)
             return res
 
 

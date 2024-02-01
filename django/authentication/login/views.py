@@ -40,9 +40,9 @@ def login_test(request):
                 </form>\
                 <form id="totpForm" class="form-inline">\
                 <div class="form-group flex-grow-1">\
-                    <input type="text" class="form-control w-100" id="totp" name="usernameEmail" required>\
+                    <input type="text" class="form-control w-100" id="totp" name="totp" required>\
                 </div>\
-                <button type="button" class="btn btn-primary ml-2" onclick="submitTotpForm()">Login</button>\
+                <button type="button" class="btn btn-primary ml-2" onclick="submitTotpForm()">Verify</button>\
                 </form>\
             </div>\
         </div>\
@@ -59,6 +59,27 @@ def login_test(request):
             };\
     \
             fetch("/login/", {\
+                method: "POST",\
+                headers: {\
+                    "Content-Type": "application/json",\
+                },\
+                body: JSON.stringify(jsonData),\
+            })\
+            .then(data => {\
+                console.log("Success:", data.text());\
+            })\
+            .catch((error) => {\
+                console.error("Error:", error);\
+            });\
+        }\
+        function submitTotpForm() {\
+            var loginValue = document.getElementById("totp").value;\
+    \
+            var jsonData = {\
+                "totp_token": loginValue,\
+            };\
+    \
+            fetch("/totp/", {\
                 method: "POST",\
                 headers: {\
                     "Content-Type": "application/json",\
