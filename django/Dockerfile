@@ -21,6 +21,9 @@ COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 RUN rm requirements.txt
 
+# Update PYTHONPATH to also spot a potential share volume
+ENV PYTHONPATH "${PYTHONPATH}:/share"
+
 ### ENTRYPOINT:
 # We will use gunicorn as a webserver. If you want to extra options for a
 # certain container you can use the 'GUNICORN_CMD_ARGS' env variable
@@ -35,5 +38,7 @@ RUN rm requirements.txt
 ENTRYPOINT ["sh", "-c", "gunicorn $_APP_NAME.wsgi\
                         --reuse-port\
                         --reload\
-                        --log-file /logs/gunicorn-error.log\
-                        --capture-output"]
+                        --log-level=info"]
+
+                        # --log-file /logs/gunicorn-error.log\
+                        # --capture-output"]

@@ -1,0 +1,16 @@
+{
+    // Files to hide in the editor
+    "files.exclude": {
+        // Python venv files:
+        "django/bin": true,
+        "django/include": true,
+        "django/lib": true,
+        "django/lib64": true,
+
+        // Database folder
+        "postgres_data": true,
+        // Any pycache folders
+        "**/__pycache__": true,
+    },
+    "files.trimTrailingWhitespace": true
+}
