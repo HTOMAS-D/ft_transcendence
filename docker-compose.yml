@@ -6,7 +6,7 @@ services:
     container_name: db
     command: -p ${DB_PORT}
     environment:
-      - PGDATA=/data
+      - PGDATA=/var/lib/postgresql/data/pgdata
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
@@ -14,7 +14,7 @@ services:
     ports:
       - ${DB_PORT}:${DB_PORT}
     volumes:
-      - ${DB_DATA}:/data"
+      - ${DB_DATA}:/var/lib/postgresql/data"
     networks:
       - transcendence
 
@@ -38,6 +38,38 @@ services:
       - transcendence
     volumes:
       - ./django/ft_transcendence:/code
+      - ./django/share:/share
+      - ${LOG_DIR}:/logs
+    restart: on-failure
+    depends_on:
+      - database
+  be_authentication:
+    build:
+      context: ./django
+      args:
+        - APP_NAME=authentication
+    container_name: be_authentication
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=${DB_PORT}
+      - PORT=${BE_AUTH_PORT}
+
+      - INTRA_ID=${INTRA_ID}
+      - INTRA_SECRET=${INTRA_SECRET}
+      - INTRA_REDIRECT_URI=${INTRA_REDIRECT_URI}
+
+      - JWT_SECRET=${JWT_SECRET}
+      - SESSION_LENGTH=${SESSION_LENGTH}
+    ports:
+      - ${BE_AUTH_PORT}:${BE_AUTH_PORT}
+    networks:
+      - transcendence
+    volumes:
+      - ./django/authentication:/code
+      - ./django/share:/share
       - ${LOG_DIR}:/logs
     restart: on-failure
     depends_on:

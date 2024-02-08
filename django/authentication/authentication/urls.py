@@ -1,5 +1,5 @@
 """
-URL configuration for ft_transcendence project.
+URL configuration for authentication project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -14,14 +14,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
-from django_prometheus import exports
-# import django_prometheus
+from django.urls import path
+from oauth.views import oauth_test, oauth_callback
+from login.views import login_test, authenticate_user
+from totp.views import authenticate_totp
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    path('', include('django_prometheus.urls')),
-    path('', include('main.urls')),
-    # path('', include('account.urls')),
+    path('oauth/test', oauth_test),
+    path('oauth/callback', oauth_callback),
+    path('login/test', login_test),
+    path('login/', authenticate_user),
+    path('totp/', authenticate_totp)
 ]

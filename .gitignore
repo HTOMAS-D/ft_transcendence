@@ -3,6 +3,9 @@ postgres_data
 postgres
 logs
 
+# Ignore share folders that are created from dockers volumes
+django/*/share
+
 .nfs*
 
 # Created by https://www.toptal.com/developers/gitignore/api/django,visualstudiocode,python,venv,pycharm
