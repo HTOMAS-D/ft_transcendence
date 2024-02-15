@@ -10,11 +10,31 @@ async function loadPartial(endpoint) {
 // Renders a partial and appends it to the location html element
 // vars is a dictionary with tags to find and replace (a tag looks like `{{NAME}}`)
 function renderPartial(text, location, vars = {}) {
+    frag = document.createDocumentFragment();
+    temp = document.createElement('div');
     for (const [key, value] of Object.entries(vars))
     {
         text = text.replaceAll(`{{${key}}}`, value);
     }
-    location.innerHTML += text;
+    temp.innerHTML = text;
+    if (temp.firstChild)
+    {
+        frag.appendChild(temp.firstChild)
+    }
+    location.appendChild(frag)
+
+    // Start replacing the script tags so they run
+    Array.from(location.querySelectorAll("script")).forEach(s =>
+        {
+            new_s = document.createElement("script");
+            new_s.innerHTML = s.innerHTML;
+            for (a in s.attributes){
+                new_s.setAttribute(a.name, a.value);
+            }
+
+            s.parentNode.replaceChild(new_s, s);
+        })
+
 }
 
 // Renders a page, removing any html that was inside a location and updating the history
