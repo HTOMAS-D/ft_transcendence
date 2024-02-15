@@ -75,6 +75,20 @@ services:
     depends_on:
       - database
 
+  ### Nginx
+  nginx:
+    image: nginx
+    ports:
+      - 4434:443
+      - 8000:80
+    networks:
+      - transcendence
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ${LOG_DIR}:/logs
+      - ./frontend:/website
+    restart: on-failure
+
   # grafana:
   #   image: grafana/grafana
   #   container_name: grafana
