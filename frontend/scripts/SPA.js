@@ -28,9 +28,9 @@ function renderPartial(text, location, vars = {}) {
         {
             new_s = document.createElement("script");
             new_s.innerHTML = s.innerHTML;
-            for (a in s.attributes){
-                new_s.setAttribute(a.name, a.value);
-            }
+            Array.from(s.getAttributeNames()).forEach(a => {
+                new_s.setAttribute(a, s.getAttribute(a));
+            })
 
             s.parentNode.replaceChild(new_s, s);
         })
@@ -59,4 +59,4 @@ async function loadInitial(){
     renderPage(p, t, l);
 }
 
-addEventListener("popstate", loadInitial)
+addEventListener("popstate", loadInitial);
