@@ -1,3 +1,4 @@
+// Functionality for a password vision toggle. It takes the input as `id` and the div containing the icon as `show`
 function passwordToggle(id, show){
     e = document.getElementById(id);
     s = document.getElementById(show);

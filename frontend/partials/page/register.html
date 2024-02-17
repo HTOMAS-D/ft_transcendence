@@ -27,8 +27,32 @@
             </div>
             <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_password_validation', 'i_password_validation_show')" id="i_password_validation_show"><i class="fa fa-eye-slash"></i></button>
         </div>
+
+        <div class="d-grid gap-2">
+            <button type="button" class="btn btn-primary btn-lg">register</button>
+        </div>
     </div>
 
+    <script>
+        async function submit(){
+            i_u = document.getElementById("i_username")
+            i_e = document.getElementById("i_email")
+            i_p = document.getElementById("i_password")
+            i_pv = document.getElementById("i_password_validation")
 
+            data = {
+                "username": i_u.value,
+                "email": i_e.value,
+                "password": i_p.value,
+                "password_validation": i_pv.value,
+            }
+
+            fetch('http://localhost:8082/user/register', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+        }
+    </script>
     <script src="scripts/passwordToggle.js"></script>
 </div>
