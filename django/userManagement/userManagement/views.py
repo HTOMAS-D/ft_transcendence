@@ -43,16 +43,33 @@ def registerUser(request):
             u.password = h.hexdigest()
 
             u.save()
-
+            return HttpResponse()
         case _:
             return errorInvalidMethod()
-    return HttpResponse()
 
 def registerOauth(request):
     return HttpResponse("hello")
 
-def getUser(request):
-    return
+def getUser(request, user_id):
+    # Get the user
+    u = None
+    try:
+        u = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return errorResponse(404, 'User not found')
+
+    # generate return json
+    data = {
+        "id": u.id,
+        "intra_id": u.intra_id,
+        "username" : u.username,
+        "email": u.email,
+    }
+
+    res = HttpResponse()
+    res['Content-Type'] = 'application/json'
+    res.content = json.dumps(data)
+    return res
 
 def getUserIntra(request):
     return
