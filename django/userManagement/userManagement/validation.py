@@ -29,4 +29,4 @@ def emailValidation(email) -> bool:
     return re.fullmatch(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b', email)
 
 def usernameValidation(uname) -> bool:
-    return re.fullmatch(r"([A-Z]|[a-z]|_|[1-9])+", uname) and len(uname) >= 3
+    return re.fullmatch(r"([A-Z]|[a-z]|_|-|[1-9])+", uname) and len(uname) >= 3

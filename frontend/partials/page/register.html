@@ -29,7 +29,7 @@
         </div>
 
         <div class="d-grid gap-2">
-            <button type="button" class="btn btn-primary btn-lg">register</button>
+            <button type="button" class="btn btn-primary btn-lg" onclick="submit()">register</button>
         </div>
     </div>
 
@@ -47,7 +47,7 @@
                 "password_validation": i_pv.value,
             }
 
-            fetch('http://localhost:8082/user/register', {
+            fetch('http://localhost:8082/user/register/', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
