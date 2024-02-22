@@ -51,25 +51,30 @@ def registerOauth(request):
     return HttpResponse("hello")
 
 def getUser(request, user_id):
-    # Get the user
-    u = None
-    try:
-        u = User.objects.get(id=user_id)
-    except User.DoesNotExist:
-        return errorResponse(404, 'User not found')
+    match(request.method):
+        case 'GET':
+            # Get the user
+            u = None
+            try:
+                u = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                return errorResponse(404, 'User not found')
 
-    # generate return json
-    data = {
-        "id": u.id,
-        "intra_id": u.intra_id,
-        "username" : u.username,
-        "email": u.email,
-    }
+            # generate return json
+            data = {
+                "id": u.id,
+                "intra_id": u.intra_id,
+                "username" : u.username,
+                "email": u.email,
+            }
 
-    res = HttpResponse()
-    res['Content-Type'] = 'application/json'
-    res.content = json.dumps(data)
-    return res
+            res = HttpResponse()
+            res['Content-Type'] = 'application/json'
+            res.content = json.dumps(data)
+            return res
+        case _:
+            return errorInvalidMethod()
+
 
 def getUserIntra(request):
     return
