@@ -45,8 +45,9 @@
         <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_new_password_validation', 'i_new_password_validation_show')" id="i_new_password_validation_show"><i class="fa fa-eye-slash"></i></button>
     </div>
 
-    <div class="row mb-3 mx-0">
-        <button type="button" class="btn btn-primary btn-lg" id="stateBtn" onclick="changeState()">edit</button>
+    <div class="mb-3 mx-0 d-flex justify-content-end">
+        <button type="button" class="btn btn-lg btn-outline-secondary hide mx-2" style="display: none;" id="cancelBtn" onclick="showView()">cancel</button>
+        <button type="button" class="btn btn-lg btn-primary" id="stateBtn" onclick="changeState()">edit</button>
     </div>
     <hr>
     <div class="row mx-0">
@@ -54,6 +55,7 @@
     </div>
 
     <script src="scripts/userInfo.js" id="userinfo_script"></script>
+    <script src="scripts/passwordToggle.js" id="userinfo_script"></script>
 
     <script>
         state = "view";
@@ -151,14 +153,18 @@
                 Array.from(elements).forEach(e => {
                     e.setAttribute("style", "display: none");
                 });
+                // TODO: Update user information on the server
+                showView();
+            }
 
+            // Will change the display mode to viewing mode
+            function showView()
+            {
                 inputs.username.disabled = true;
                 inputs.email.disabled = true;
                 inputs.cur_password.disabled = true;
                 inputs.new_password.disabled = true;
                 inputs.new_password_v.disabled = true;
-
-                // TODO: Update user information on the server
 
                 // Update state and stateBtn
                 inputs.stateBtn.innerText = "edit";
