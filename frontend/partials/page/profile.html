@@ -101,6 +101,7 @@
                     img = new Image();
                     img.src = reader.result;
 
+                    ctx.clearRect(0, 0, inputs.image_c.width, inputs.image_c.height);
                     ctx.drawImage(img, 0, 0, inputs.image_c.width, inputs.image_c.height);
                     console.log(inputs.image_c.toDataURL("image/jpeg"))
                 }
