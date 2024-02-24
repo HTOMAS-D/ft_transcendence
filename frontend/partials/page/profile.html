@@ -129,47 +129,52 @@
             btn = document.getElementById("edit");
             if (state == "view") // Go to edit state
             {
-                // Show all hidden elements
-                elements = document.getElementsByClassName("hide")
-                Array.from(elements).forEach(e => {
-                    e.removeAttribute("style");
-                });
-
-                // Enable input fields
-                inputs.username.disabled = false;
-                inputs.email.disabled = false;
-                inputs.cur_password.disabled = false;
-                inputs.new_password.disabled = false;
-                inputs.new_password_v.disabled = false;
-
-                // Update the state and the stateBtn
-                inputs.stateBtn.innerText = "save";
-                state = "edit";
+                showEdit()
             }
             else if (state == "edit")
             {
-                // Show hidden elements
-                elements = document.getElementsByClassName("hide")
-                Array.from(elements).forEach(e => {
-                    e.setAttribute("style", "display: none");
-                });
                 // TODO: Update user information on the server
                 showView();
             }
+        }
 
-            // Will change the display mode to viewing mode
-            function showView()
-            {
-                inputs.username.disabled = true;
-                inputs.email.disabled = true;
-                inputs.cur_password.disabled = true;
-                inputs.new_password.disabled = true;
-                inputs.new_password_v.disabled = true;
+        function showEdit(){
+            // Show all hidden elements
+            elements = document.getElementsByClassName("hide")
+            Array.from(elements).forEach(e => {
+                e.removeAttribute("style");
+            });
 
-                // Update state and stateBtn
-                inputs.stateBtn.innerText = "edit";
-                state = "view";
-            }
+            // Enable input fields
+            inputs.username.disabled = false;
+            inputs.email.disabled = false;
+            inputs.cur_password.disabled = false;
+            inputs.new_password.disabled = false;
+            inputs.new_password_v.disabled = false;
+
+            // Update the state and the stateBtn
+            inputs.stateBtn.innerText = "save";
+            state = "edit";
+        }
+
+        // Will change the display mode to viewing mode
+        function showView()
+        {
+            // rehide hidden elements
+            elements = document.getElementsByClassName("hide")
+            Array.from(elements).forEach(e => {
+                e.setAttribute("style", "display: none");
+            });
+
+            inputs.username.disabled = true;
+            inputs.email.disabled = true;
+            inputs.cur_password.disabled = true;
+            inputs.new_password.disabled = true;
+            inputs.new_password_v.disabled = true;
+
+            // Update state and stateBtn
+            inputs.stateBtn.innerText = "edit";
+            state = "view";
         }
     </script>
 </div>
