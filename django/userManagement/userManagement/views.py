@@ -6,6 +6,7 @@ from hashlib import sha256
 import json
 from .validation import passwordValidation, emailValidation, usernameValidation
 from sessions.sessions import validate
+import logging
 
 def registerUser(request):
     match(request.method):
@@ -72,16 +73,17 @@ def getUserById(request, user_id):
 def getUserByCookie(request):
     # Validate session
     c = request.COOKIES.get("session")
-    if (not c)
+    if (not request.COOKIES.get("session")):
         return errorResponse(401, "No session cookie")
     u = validate(c)
-    if (u == None)
+    if (u == None):
         return errorResponse(401, "Invalid session cookie")
 
     # generate response
     res = HttpResponse()
     res['Content-Type'] = 'application/json'
     res.content = generateUserJson(u)
+    logging.info("Content: " + str(res.content))
     return res
 
     u = validate()
