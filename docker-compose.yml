@@ -91,6 +91,8 @@ services:
       - INTRA_ID=${INTRA_ID}
       - INTRA_SECRET=${INTRA_SECRET}
       - INTRA_REDIRECT_URI=${INTRA_REDIRECT_URI}
+
+      - JWT_SECRET=${JWT_SECRET}
     ports:
       - ${BE_USER_PORT}:${BE_USER_PORT}
     networks:
