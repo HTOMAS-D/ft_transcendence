@@ -5,6 +5,7 @@ from models.models import User
 from hashlib import sha256
 import json
 from .validation import passwordValidation, emailValidation, usernameValidation
+from sessions.sessions import validate
 
 def registerUser(request):
     match(request.method):
@@ -68,6 +69,22 @@ def getUserById(request, user_id):
         case _:
             return errorInvalidMethod()
 
+def getUserByCookie(request):
+    # Validate session
+    c = request.COOKIES.get("session")
+    if (not c)
+        return errorResponse(401, "No session cookie")
+    u = validate(c)
+    if (u == None)
+        return errorResponse(401, "Invalid session cookie")
+
+    # generate response
+    res = HttpResponse()
+    res['Content-Type'] = 'application/json'
+    res.content = generateUserJson(u)
+    return res
+
+    u = validate()
 
 def getUserByUsername(request, username):
     match (request.method):
