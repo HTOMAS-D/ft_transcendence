@@ -4,9 +4,75 @@ from general.errors import errorInvalidMethod, errorResponse
 from models.models import User
 from hashlib import sha256
 import json
-from .validation import passwordValidation, emailValidation, usernameValidation
+from .validation import passwordValidation, emailValidation, usernameValidation pfpValidation
 from sessions.sessions import validate
 import logging
+
+def updateUser(request):
+    match(request.method):
+        case 'PATCH':
+            # Validate session
+            c = request.COOKIES.get("session")
+            if (not request.COOKIES.get("session")):
+                return errorResponse(401, "No session cookie")
+            u = validate(c)
+            if (u == None):
+                return errorResponse(401, "Invalid session cookie")
+
+            # TODO: check totp
+
+            # Validate body data
+            data = None
+            try:
+                data = json.loads(request.body)
+            except:
+                return errorResponse(400, "Invalid body")
+
+            keys = ['username', 'email', 'password', 'new_password', 'new_password_validation', 'pfp']
+            if (not all(key in data for key in keys)):
+                return errorResponse(400, "Invalid body")
+
+            # validate username & email
+            if (not usernameValidation(data['username'])):
+                return errorResponse(400, 'Invalid username')
+            if (User.objects.filter(username=data['username']).exists()):
+                return errorResponse(409, 'Email already taken')
+            if (not emailValidation(data['email'])):
+                return errorResponse(400, 'Invalid email')
+            if (User.objects.filter(email=data['email']).exists()):
+                return errorResponse(409, 'Email already taken')
+
+
+            u.username = data['username']
+            u.email = data['email']
+
+            h = sha256()
+            h.update(str.encode(data['password']))
+            pw_h = h.hexdigest()
+
+            if (pw_h != u.password):
+                return errorResponse(401, "Invalid credentials")
+
+            # Password validation if necessary (these fields can be blank)
+            if (data['new_password'] or data['new_password_validation']):
+                if (not data['new_password'] or not data['new_password_validation']):
+                    return errorResponse(400, "Invalid body")
+
+                if (data['new_password'] != data['new_password_validation']):
+                    return errorResponse(400, "New passwords do not match")
+                if (passwordValidation(rdata['new_password'])):
+                    return errorResponse(400, "New password does not match requirements")
+
+                h = sha256()
+                h.update(str.encode(data['new_password']))
+                u.password = h.hexdigest()
+
+            # Pfp validation if required
+            if (data['pfp']):
+                if (pfpValidation):
+                    return errorResponse(400, "PFP not in correct format, expected data:image/jpeg;base64")
+                u.pfp = data['pfp']
+            u.save()
 
 def registerUser(request):
     match(request.method):

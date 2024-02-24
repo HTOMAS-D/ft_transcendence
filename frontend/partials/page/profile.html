@@ -19,16 +19,8 @@
         <input class="form-control" type="email" name="email" id="i_email" placeholder="" value="" disabled>
         <label for="i_email" class="form-label">Email</label>
     </div>
-    <!-- Password -->
+    <!-- New Password -->
     <hr class="hide" style="display: none">
-    <div class="input-group mb-3 hide" style="display: none">
-        <div class="form-floating">
-            <input class="form-control" type="password" name="password" id="i_password" placeholder="" disabled>
-            <label for="i_password" class="form-label">Current Password</label>
-        </div>
-        <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_password', 'i_password_show')" id="i_password_show"><i class="fa fa-eye-slash" disabled></i></button>
-    </div>
-
     <div class="input-group mb-3 hide" style="display: none">
         <div class="form-floating">
             <input class="form-control" type="password" name="new_password" id="i_new_password" placeholder="" disabled>
@@ -44,6 +36,16 @@
         </div>
         <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_new_password_validation', 'i_new_password_validation_show')" id="i_new_password_validation_show"><i class="fa fa-eye-slash"></i></button>
     </div>
+    <!-- Password -->
+    <hr class="hide" style="display: none;">
+    <div class="input-group mb-3 hide" style="display: none">
+        <div class="form-floating">
+            <input class="form-control" type="password" name="password" id="i_password" placeholder="" disabled>
+            <label for="i_password" class="form-label">Current Password</label>
+        </div>
+        <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_password', 'i_password_show')" id="i_password_show"><i class="fa fa-eye-slash" disabled></i></button>
+    </div>
+    <hr>
 
     <div class="mb-3 mx-0 d-flex justify-content-end">
         <button type="button" class="btn btn-lg btn-outline-secondary hide mx-2" style="display: none;" id="cancelBtn" onclick="showView()">cancel</button>

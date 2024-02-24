@@ -30,3 +30,6 @@ def emailValidation(email) -> bool:
 
 def usernameValidation(uname) -> bool:
     return re.fullmatch(r"([A-Z]|[a-z]|_|-|[1-9])+", uname) and len(uname) >= 3
+
+def pfpValidation(pfp) -> bool:
+    return pfp.startswith("data:image/jpeg;base64")
