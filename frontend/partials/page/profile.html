@@ -3,9 +3,12 @@
 
     <!-- Profile picture -->
     <div class="row justify-content-center mb-3">
-        <canvas class="border border-primary rounded-circle h-100 col-3 p-0 mb-3" width=128 height=128></canvas>
+        <canvas class="border border-primary rounded-circle h-100 col-3 p-0 mb-3" width=128 height=128 id="img_canvas"></canvas>
     </div>
-    <input type="file" class="form-control hide" style="display: none">
+    <div class="mb-3 hide" style="display: none">
+        <label for="i_image" class="form-label">Profile picture</label>
+        <input type="file" class="form-control" accept="image/*" id="i_image">
+    </div>
     <!-- General information -->
     <hr>
     <div class="mb-3 form-floating">
@@ -57,6 +60,8 @@
 
         inputs = {
             stateBtn: document.getElementById("stateBtn"),
+            image : document.getElementById("i_image"),
+            image_c : document.getElementById("img_canvas"),
             username: document.getElementById("i_username"),
             email:    document.getElementById("i_email"),
             cur_password:   document.getElementById("i_password"),
@@ -80,6 +85,30 @@
             inputs.username.value = u_data.username;
             inputs.email.value = u_data.email;
         });
+
+        inputs.image.addEventListener("change", updateCanvas)
+
+        function updateCanvas(e)
+        {
+            file = inputs.image.files[0];
+            ctx = inputs.image_c.getContext('2d');
+            reader = new FileReader();
+
+            if (file)
+            {
+                reader.onload = () => {
+                    console.log("Hello")
+                    img = new Image();
+                    img.src = reader.result;
+
+                    ctx.drawImage(img, 0, 0, inputs.image_c.width, inputs.image_c.height);
+                    console.log(inputs.image_c.toDataURL("image/jpeg"))
+                }
+            }
+
+            reader.readAsDataURL(file);
+        }
+
 
         function changeState()
         {
