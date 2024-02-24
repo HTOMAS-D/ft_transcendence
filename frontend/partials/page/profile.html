@@ -9,11 +9,11 @@
     <!-- General information -->
     <hr>
     <div class="mb-3 form-floating">
-        <input class="form-control" type="text" name="username" id="i_username" placeholder="" value="username" disabled>
+        <input class="form-control" type="text" name="username" id="i_username" placeholder="" value="" disabled>
         <label for="i_username" class="form-label">Username</label>
     </div>
     <div class="mb-3 form-floating">
-        <input class="form-control" type="email" name="email" id="i_email" placeholder="" value="email@email.com" disabled>
+        <input class="form-control" type="email" name="email" id="i_email" placeholder="" value="" disabled>
         <label for="i_email" class="form-label">Email</label>
     </div>
     <!-- Password -->
@@ -50,7 +50,7 @@
         <button type="button" class="btn btn-primary btn-lg">totp</button>
     </div>
 
-    <script src="scripts/userInfo.js"></script>
+    <script src="scripts/userInfo.js" id="userinfo_script"></script>
 
     <script>
         state = "view";
@@ -63,6 +63,23 @@
             new_password:   document.getElementById("i_new_password"),
             new_password_v: document.getElementById("i_new_password_validation"),
         };
+
+        // Load and set user data in input fields
+        s = document.getElementById("userinfo_script")
+        s.addEventListener("load", async () => {
+            u_data = sessionStorage.getItem("UserInfo");
+
+            if (u_data == null) {
+                await getUserInfo();
+                u_data = sessionStorage.getItem("UserInfo");
+            }
+
+            console.log(u_data)
+            u_data = JSON.parse(u_data);
+
+            inputs.username.value = u_data.username;
+            inputs.email.value = u_data.email;
+        });
 
         function changeState()
         {
