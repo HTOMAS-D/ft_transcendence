@@ -109,5 +109,6 @@ def generateUserJson(user):
         "intra_id": user.intra_id,
         "username" : user.username,
         "email": user.email,
+        "pfp": user.pfp,
     }
     return json.dumps(data)

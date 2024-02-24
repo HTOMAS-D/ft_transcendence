@@ -79,11 +79,21 @@
                 u_data = sessionStorage.getItem("UserInfo");
             }
 
-            console.log(u_data)
             u_data = JSON.parse(u_data);
 
             inputs.username.value = u_data.username;
             inputs.email.value = u_data.email;
+
+            // Set image
+            img = new Image();
+            img.src = u_data.pfp;
+
+            img.onload = () => {
+                ctx = inputs.image_c.getContext("2d");
+
+                ctx.clearRect(0, 0, inputs.image_c.width, inputs.image_c.height);
+                ctx.drawImage(img, 0, 0, inputs.image_c.width, inputs.image_c.height);
+            }
         });
 
         inputs.image.addEventListener("change", updateCanvas)
@@ -91,19 +101,20 @@
         function updateCanvas(e)
         {
             file = inputs.image.files[0];
-            ctx = inputs.image_c.getContext('2d');
             reader = new FileReader();
 
             if (file)
             {
                 reader.onload = () => {
-                    console.log("Hello")
                     img = new Image();
                     img.src = reader.result;
 
-                    ctx.clearRect(0, 0, inputs.image_c.width, inputs.image_c.height);
-                    ctx.drawImage(img, 0, 0, inputs.image_c.width, inputs.image_c.height);
-                    console.log(inputs.image_c.toDataURL("image/jpeg"))
+                    img.onload = () => {
+                        ctx = inputs.image_c.getContext('2d');
+
+                        ctx.clearRect(0, 0, inputs.image_c.width, inputs.image_c.height);
+                        ctx.drawImage(img, 0, 0, inputs.image_c.width, inputs.image_c.height);
+                    }
                 }
             }
 
