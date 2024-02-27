@@ -4,7 +4,7 @@ from general.errors import errorInvalidMethod, errorResponse
 from models.models import User
 from hashlib import sha256
 import json
-from .validation import passwordValidation, emailValidation, usernameValidation pfpValidation
+from .validation import passwordValidation, emailValidation, usernameValidation, pfpValidation
 from sessions.sessions import validate
 import logging
 
@@ -149,7 +149,6 @@ def getUserByCookie(request):
     res = HttpResponse()
     res['Content-Type'] = 'application/json'
     res.content = generateUserJson(u)
-    logging.info("Content: " + str(res.content))
     return res
 
     u = validate()
