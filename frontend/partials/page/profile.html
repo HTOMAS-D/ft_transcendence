@@ -1,74 +1,85 @@
-<div id="login" class="container align-center col-4 my-2 p-2 card">
-    <h1 class="text-center">Profile</h1>
+<div i="profile">
+    <div id="userInfo" class="container align-center col-4 my-2 p-2 card">
+        <h1 class="text-center">Profile</h1>
 
-    <!-- Profile picture -->
-    <div class="row justify-content-center mb-3">
-        <canvas class="border border-primary rounded-circle h-100 col-3 p-0 mb-3" width=128 height=128 id="img_canvas"></canvas>
-    </div>
-    <div class="mb-3 hide" style="display: none">
-        <label for="i_image" class="form-label">Profile picture</label>
-        <input type="file" class="form-control" accept="image/*" id="i_image">
-    </div>
-    <!-- General information -->
-    <hr>
-    <div class="mb-3 form-floating">
-        <input class="form-control" type="text" name="username" id="i_username" placeholder="" value="" disabled>
-        <label for="i_username" class="form-label">Username</label>
-        <div class="invalid-feedback">
-            Invalid username; A username must be at least 3 characters long, and only contain alphabetical and numeric characters or the following special characters: <samp>_-</samp>
+        <!-- Profile picture -->
+        <div class="row justify-content-center mb-3">
+            <canvas class="border border-primary rounded-circle h-100 col-3 p-0 mb-3" width=128 height=128 id="img_canvas"></canvas>
         </div>
-    </div>
-    <div class="mb-3 form-floating">
-        <input class="form-control" type="email" name="email" id="i_email" placeholder="" value="" disabled>
-        <label for="i_email" class="form-label">Email</label>
-    </div>
-    <!-- New Password -->
-    <hr class="hide" style="display: none">
-    <div class="input-group mb-3 hide" style="display: none">
-        <div class="form-floating">
-            <input class="form-control" type="password" name="new_password" id="i_new_password" placeholder="" disabled>
-            <label for="i_new_password" class="form-label">New Password</label>
+        <div class="mb-3 hide" style="display: none">
+            <label for="i_image" class="form-label">Profile picture</label>
+            <input type="file" class="form-control" accept="image/*" id="i_image">
+        </div>
+        <!-- General information -->
+        <hr>
+        <div class="mb-3 form-floating">
+            <input class="form-control" type="text" name="username" id="i_username" placeholder="" value="" disabled>
+            <label for="i_username" class="form-label">Username</label>
             <div class="invalid-feedback">
-                Invalid Password; A password must at least be 8 characters long and must contain the following: a capital letter, a digit and a special character (<samp>! "#$%&'()*+,-./:;&lt=&gt?@[]^_`{|}~</samp>)
+                Invalid username; A username must be at least 3 characters long, and only contain alphabetical and numeric characters or the following special characters: <samp>_-</samp>
             </div>
         </div>
-        <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_new_password', 'i_new_password_show')" id="i_new_password_show"><i class="fa fa-eye-slash"></i></button>
-    </div>
-
-    <div class="input-group mb-3 hide" style="display: none">
-        <div class="form-floating">
-            <input class="form-control" type="password" name="new_password_validation" id="i_new_password_validation" placeholder="" disabled>
-            <label for="i_new_password_validation" class="form-label">Repeat New Password</label>
-            <div class="invalid-feedback">
-                Password do not match
+        <div class="mb-3 form-floating">
+            <input class="form-control" type="email" name="email" id="i_email" placeholder="" value="" disabled>
+            <label for="i_email" class="form-label">Email</label>
+        </div>
+        <!-- New Password -->
+        <hr class="hide" style="display: none">
+        <div class="input-group mb-3 hide" style="display: none">
+            <div class="form-floating">
+                <input class="form-control" type="password" name="new_password" id="i_new_password" placeholder="" disabled>
+                <label for="i_new_password" class="form-label">New Password</label>
+                <div class="invalid-feedback">
+                    Invalid Password; A password must at least be 8 characters long and must contain the following: a capital letter, a digit and a special character (<samp>! "#$%&'()*+,-./:;&lt=&gt?@[]^_`{|}~</samp>)
+                </div>
             </div>
+            <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_new_password', 'i_new_password_show')" id="i_new_password_show"><i class="fa fa-eye-slash"></i></button>
         </div>
-        <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_new_password_validation', 'i_new_password_validation_show')" id="i_new_password_validation_show"><i class="fa fa-eye-slash"></i></button>
-    </div>
-    <!-- Password -->
-    <hr class="hide" style="display: none;">
-    <div class="input-group mb-3 hide" style="display: none">
-        <div class="form-floating">
-            <input class="form-control" type="password" name="password" id="i_password" placeholder="" disabled>
-            <label for="i_password" class="form-label">Current Password</label>
+
+        <div class="input-group mb-3 hide" style="display: none">
+            <div class="form-floating">
+                <input class="form-control" type="password" name="new_password_validation" id="i_new_password_validation" placeholder="" disabled>
+                <label for="i_new_password_validation" class="form-label">Repeat New Password</label>
+                <div class="invalid-feedback">
+                    Password do not match
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_new_password_validation', 'i_new_password_validation_show')" id="i_new_password_validation_show"><i class="fa fa-eye-slash"></i></button>
         </div>
-        <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_password', 'i_password_show')" id="i_password_show"><i class="fa fa-eye-slash" disabled></i></button>
-    </div>
-    <hr>
+        <!-- Password -->
+        <hr class="hide" style="display: none;">
+        <div class="input-group mb-3 hide" style="display: none">
+            <div class="form-floating">
+                <input class="form-control" type="password" name="password" id="i_password" placeholder="" disabled>
+                <label for="i_password" class="form-label">Current Password</label>
+            </div>
+            <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_password', 'i_password_show')" id="i_password_show"><i class="fa fa-eye-slash" disabled></i></button>
+        </div>
+        <hr>
 
-    <div class="mb-3 mx-0 d-flex justify-content-end">
-        <button type="button" class="btn btn-lg btn-outline-secondary hide mx-2" style="display: none;" id="cancelBtn" onclick="showView()">cancel</button>
-        <button type="button" class="btn btn-lg btn-primary" id="stateBtn" onclick="changeState()">edit</button>
-    </div>
-    <hr>
-    <div class="row mx-0">
-        <button type="button" class="btn btn-primary btn-lg">totp</button>
+        <div class="text-danger" style="display: none;" id="txt_error">
+            This is error text
+        </div>
+
+        <div class="mb-3 mx-0 d-flex justify-content-end">
+            <button type="button" class="btn btn-lg btn-outline-secondary hide mx-2" style="display: none;" id="cancelBtn" onclick="showView()">cancel</button>
+            <button type="button" class="btn btn-lg btn-primary" id="stateBtn" onclick="changeState()">edit</button>
+        </div>
     </div>
 
+    <div class="container card align-center col-4 p-2" id="2fa">
+        <h1 class="text-center">2 Factor Authentication</h1>
+        <div class="row mx-0">
+            <button type="button" class="btn btn-primary btn-lg">totp</button>
+        </div>
+    </div>
+
+    <!-- General scripts -->
     <script src="scripts/userInfo.js" id="s_userInfo"></script>
     <script src="scripts/userValidation.js" id="s_userValidation"></script>
     <script src="scripts/passwordToggle.js" id="s_passwordToggle"></script>
 
+    <!-- Profile script -->
     <script>
         state = "view";
 
@@ -81,19 +92,13 @@
             cur_password:   document.getElementById("i_password"),
             new_password:   document.getElementById("i_new_password"),
             new_password_v: document.getElementById("i_new_password_validation"),
+            error_text: document.getElementById("txt_error")
         };
 
-        // Load and set user data in input fields
-        s = document.getElementById("s_userInfo")
-        s.addEventListener("load", async () => {
-            u_data = sessionStorage.getItem("UserInfo");
-
-            if (u_data == null) {
-                await getUserInfo();
-                u_data = sessionStorage.getItem("UserInfo");
-            }
-
-            u_data = JSON.parse(u_data);
+        // Takes user info from userInfo in session storage and updates the display
+        function displayUserInfo()
+        {
+            u_data = JSON.parse(sessionStorage.getItem("UserInfo"));
 
             inputs.username.value = u_data.username;
             inputs.email.value = u_data.email;
@@ -108,6 +113,13 @@
                 ctx.clearRect(0, 0, inputs.image_c.width, inputs.image_c.height);
                 ctx.drawImage(img, 0, 0, inputs.image_c.width, inputs.image_c.height);
             }
+        }
+
+        // Load and set user data in input fields
+        s = document.getElementById("s_userInfo")
+        s.addEventListener("load", async () => {
+            await getUserInfo();
+            displayUserInfo();
         });
 
         inputs.image.addEventListener("change", updateCanvas)
@@ -158,6 +170,7 @@
                 inputs.username.classList.remove("is-invalid");
                 inputs.new_password.classList.remove("is-invalid");
                 inputs.new_password_v.classList.remove("is-invalid");
+                inputs.error_text.style = "display: none;";
 
                 // Input validation
                 isValid = true;
@@ -190,9 +203,20 @@
                     headers: {'Content-Type': 'application/json'},
                     credentials: "include",
                     body: JSON.stringify(data),
-                }).then((res) => {
-                    if (res.ok)
+                }).then(async (res) => {
+                    if (res.ok){
+                        // Update user data
+                        data = await res.json();
+                        sessionStorage.setItem("UserInfo", JSON.stringify(data));
+                        displayUserInfo();
+                        // Go back to view mode
                         showView();
+                    }
+                    else {
+                        data = await res.json();
+                        inputs.error_text.innerText = data.error;
+                        inputs.error_text.style = "";
+                    }
                 });
             }
         }
@@ -230,6 +254,7 @@
             inputs.cur_password.disabled = true;
             inputs.new_password.disabled = true;
             inputs.new_password_v.disabled = true;
+            inputs.error_text.style = "display: none;"
 
             inputs.new_password.value = "";
             inputs.new_password_v.value = "";
@@ -240,4 +265,6 @@
             state = "view";
         }
     </script>
+
+    <!-- 2FA script -->
 </div>
