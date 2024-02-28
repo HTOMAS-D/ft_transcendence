@@ -32,26 +32,28 @@ def updateUser(request):
             if (not all(key in data for key in keys)):
                 return errorResponse(400, "Invalid body")
 
-            # validate username & email
-            if (not usernameValidation(data['username'])):
-                return errorResponse(400, 'Invalid username')
-            if (User.objects.filter(username=data['username']).exists()):
-                return errorResponse(409, 'Email already taken')
-            if (not emailValidation(data['email'])):
-                return errorResponse(400, 'Invalid email')
-            if (User.objects.filter(email=data['email']).exists()):
-                return errorResponse(409, 'Email already taken')
-
-
-            u.username = data['username']
-            u.email = data['email']
-
             h = sha256()
             h.update(str.encode(data['password']))
             pw_h = h.hexdigest()
 
             if (pw_h != u.password):
                 return errorResponse(401, "Invalid credentials")
+
+            # validate username & email
+            if (u.username != data["username"]): # If the username has been updated
+                if (not usernameValidation(data['username'])):
+                    return errorResponse(400, 'Invalid username')
+                if (User.objects.filter(username=data['username']).exists()):
+                    return errorResponse(409, 'Email already taken')
+            if (u.email != data["email"]): # If the username has been updated
+                if (not emailValidation(data['email'])):
+                    return errorResponse(400, 'Invalid email')
+                if (User.objects.filter(email=data['email']).exists()):
+                    return errorResponse(409, 'Email already taken')
+
+
+            u.username = data['username']
+            u.email = data['email']
 
             # Password validation if necessary (these fields can be blank)
             if (data['new_password'] or data['new_password_validation']):
@@ -68,11 +70,16 @@ def updateUser(request):
                 u.password = h.hexdigest()
 
             # Pfp validation if required
-            if (data['pfp']):
-                if (pfpValidation):
+            if (u.pfp != data['pfp']):
+                if (not pfpValidation(data['pfp'])):
                     return errorResponse(400, "PFP not in correct format, expected data:image/jpeg;base64")
                 u.pfp = data['pfp']
             u.save()
+
+            res = HttpResponse()
+            res['Content-Type'] = 'application/json'
+            res.content = generateUserJson(u)
+            return res
 
 def registerUser(request):
     match(request.method):

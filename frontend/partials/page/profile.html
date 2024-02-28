@@ -135,8 +135,26 @@
             }
             else if (state == "edit")
             {
+                // TODO: Do input validation
+
                 // TODO: Update user information on the server
-                showView();
+                data = {
+                    username: inputs.username.value,
+                    email: inputs.email.value,
+                    password: inputs.cur_password.value,
+                    new_password: inputs.new_password.value,
+                    new_password_validation: inputs.new_password_v.value,
+                    pfp: inputs.image_c.toDataURL("image/jpeg"),
+                }
+
+                fetch("http://localhost:8082/user/update", {
+                    method: "PATCH",
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: "include",
+                    body: JSON.stringify(data),
+                }).then((res) => {
+                    showView();
+                })
             }
         }
 
