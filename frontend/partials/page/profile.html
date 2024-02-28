@@ -70,7 +70,7 @@
     <div class="container card align-center col-4 p-2" id="2fa">
         <h1 class="text-center">2 Factor Authentication</h1>
         <div class="row mx-0">
-            <button type="button" class="btn btn-primary btn-lg">totp</button>
+            <button type="button" class="btn btn-primary btn-lg" id="totp_btn">totp</button>
         </div>
     </div>
 
@@ -92,7 +92,7 @@
             cur_password:   document.getElementById("i_password"),
             new_password:   document.getElementById("i_new_password"),
             new_password_v: document.getElementById("i_new_password_validation"),
-            error_text: document.getElementById("txt_error")
+            error_text: document.getElementById("txt_error"),
         };
 
         // Takes user info from userInfo in session storage and updates the display
@@ -207,7 +207,7 @@
                     if (res.ok){
                         // Update user data
                         data = await res.json();
-                        sessionStorage.setItem("UserInfo", JSON.stringify(data));
+                        setUserInfo(JSON.stringify(data));
                         displayUserInfo();
                         // Go back to view mode
                         showView();
@@ -266,5 +266,34 @@
         }
     </script>
 
+    <!-- Load user script -->
+
     <!-- 2FA script -->
+    <script>
+        totp_inputs = {
+            button: document.getElementById("totp_btn"),
+            qr_canvas: document.getElementById("totp_canvas"),
+            totp_key: document.getElementById("i_totp_key"),
+            text: document.getElementById("totp_text"),
+        }
+
+        // Runs every time user info is updated
+        window.addEventListener("UserInfoUpdate", (e) => {
+            // Update totp every time the userInfo is updated
+            u = JSON.parse(sessionStorage.getItem("UserInfo"))
+
+            if (!u.has_2fa)
+                totp_inputs.button.innerText = "Enable 2FA";
+            else
+                totp_inputs.button.innerText = "Reset 2FA";
+        });
+
+        function showUpdate2FA() {
+
+        }
+
+        function update2FA() {
+
+        }
+    </script>
 </div>

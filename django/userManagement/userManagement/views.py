@@ -179,5 +179,6 @@ def generateUserJson(user):
         "username" : user.username,
         "email": user.email,
         "pfp": user.pfp,
+        "has_2fa" : (user.totp_secret != ""),
     }
     return json.dumps(data)
