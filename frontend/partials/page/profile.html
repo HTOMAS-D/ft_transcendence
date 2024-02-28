@@ -14,6 +14,9 @@
     <div class="mb-3 form-floating">
         <input class="form-control" type="text" name="username" id="i_username" placeholder="" value="" disabled>
         <label for="i_username" class="form-label">Username</label>
+        <div class="invalid-feedback">
+            Invalid username; A username must be at least 3 characters long, and only contain alphabetical and numeric characters or the following special characters: <samp>_-</samp>
+        </div>
     </div>
     <div class="mb-3 form-floating">
         <input class="form-control" type="email" name="email" id="i_email" placeholder="" value="" disabled>
@@ -25,6 +28,9 @@
         <div class="form-floating">
             <input class="form-control" type="password" name="new_password" id="i_new_password" placeholder="" disabled>
             <label for="i_new_password" class="form-label">New Password</label>
+            <div class="invalid-feedback">
+                Invalid Password; A password must at least be 8 characters long and must contain the following: a capital letter, a digit and a special character (<samp>! "#$%&'()*+,-./:;&lt=&gt?@[]^_`{|}~</samp>)
+            </div>
         </div>
         <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_new_password', 'i_new_password_show')" id="i_new_password_show"><i class="fa fa-eye-slash"></i></button>
     </div>
@@ -33,6 +39,9 @@
         <div class="form-floating">
             <input class="form-control" type="password" name="new_password_validation" id="i_new_password_validation" placeholder="" disabled>
             <label for="i_new_password_validation" class="form-label">Repeat New Password</label>
+            <div class="invalid-feedback">
+                Password do not match
+            </div>
         </div>
         <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_new_password_validation', 'i_new_password_validation_show')" id="i_new_password_validation_show"><i class="fa fa-eye-slash"></i></button>
     </div>
@@ -56,8 +65,9 @@
         <button type="button" class="btn btn-primary btn-lg">totp</button>
     </div>
 
-    <script src="scripts/userInfo.js" id="userinfo_script"></script>
-    <script src="scripts/passwordToggle.js" id="userinfo_script"></script>
+    <script src="scripts/userInfo.js" id="s_userInfo"></script>
+    <script src="scripts/userValidation.js" id="s_userValidation"></script>
+    <script src="scripts/passwordToggle.js" id="s_passwordToggle"></script>
 
     <script>
         state = "view";
@@ -74,7 +84,7 @@
         };
 
         // Load and set user data in input fields
-        s = document.getElementById("userinfo_script")
+        s = document.getElementById("s_userInfo")
         s.addEventListener("load", async () => {
             u_data = sessionStorage.getItem("UserInfo");
 
@@ -135,9 +145,6 @@
             }
             else if (state == "edit")
             {
-                // TODO: Do input validation
-
-                // TODO: Update user information on the server
                 data = {
                     username: inputs.username.value,
                     email: inputs.email.value,
@@ -145,16 +152,50 @@
                     new_password: inputs.new_password.value,
                     new_password_validation: inputs.new_password_v.value,
                     pfp: inputs.image_c.toDataURL("image/jpeg"),
+                };
+
+                // TODO: Do input validation
+                // Remove old validation styling
+                inputs.username.classList.remove("is-invalid");
+                inputs.email.classList.remove("is-invalid");
+                inputs.new_password.classList.remove("is-invalid");
+                inputs.new_password_v.classList.remove("is-invalid");
+
+                // Input validation
+                isValid = true;
+                // Verify username
+                if (!usernameValidation(inputs.username.value)){
+                    inputs.username.classList.add("is-invalid");
+                    isValid = false;
+                }
+                // Verify new password
+                if (inputs.new_password.value != "" || inputs.new_password_v.value != "") {
+                    if (!passwordValidation(inputs.new_password.value)) {
+                        inputs.new_password.classList.add("is-invalid");
+                        isValid = false;
+                    }
+                    if (inputs.new_password.value != inputs.new_password_v.value) {
+                        inputs.new_password_v.classList.add("is-invalid");
+                        isValid = false;
+                    }
                 }
 
+                // Reset inputs that aren't supposed to retain their value
+                inputs.cur_password.value = "";
+
+                if (!isValid)
+                    return
+
+                // Update info on server
                 fetch("http://localhost:8082/user/update", {
                     method: "PATCH",
                     headers: {'Content-Type': 'application/json'},
                     credentials: "include",
                     body: JSON.stringify(data),
                 }).then((res) => {
-                    showView();
-                })
+                    if (res.ok)
+                        showView();
+                });
             }
         }
 
@@ -191,6 +232,10 @@
             inputs.cur_password.disabled = true;
             inputs.new_password.disabled = true;
             inputs.new_password_v.disabled = true;
+
+            inputs.new_password.value = "";
+            inputs.new_password_v.value = "";
+            inputs.cur_password.value = "";
 
             // Update state and stateBtn
             inputs.stateBtn.innerText = "edit";

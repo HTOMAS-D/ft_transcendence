@@ -57,12 +57,9 @@ def updateUser(request):
 
             # Password validation if necessary (these fields can be blank)
             if (data['new_password'] or data['new_password_validation']):
-                if (not data['new_password'] or not data['new_password_validation']):
-                    return errorResponse(400, "Invalid body")
-
                 if (data['new_password'] != data['new_password_validation']):
                     return errorResponse(400, "New passwords do not match")
-                if (passwordValidation(rdata['new_password'])):
+                if (not passwordValidation(data['new_password'])):
                     return errorResponse(400, "New password does not match requirements")
 
                 h = sha256()

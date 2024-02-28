@@ -13,7 +13,7 @@ def passwordValidation(password) -> bool:
         return False
 
     # Check allowed special characters
-    s_c = " !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
+    s_c = " !\"#$%&'()*+,-./:;<=>?@[]^_`{|}~"
     if (not any(c in password for c in s_c)):
         return False
 
