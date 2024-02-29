@@ -21,3 +21,8 @@ function usernameValidation(username)
 {
     return /^([A-Z]|[a-z]|_|-|[1-9])+$/.test(username) && username.length >= 3
 }
+
+function totpKeyValidation(key)
+{
+    return /^([0-9]){6}$/.test(key)
+}

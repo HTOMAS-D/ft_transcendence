@@ -70,10 +70,17 @@
     <!-- 2FA -->
     <div class="container card align-center col-4 p-2" id="2fa">
         <h1 class="text-center">2 Factor Authentication</h1>
-        <div class="row mx-0 mb-2">
-            <button type="button" class="btn btn-primary btn-lg" id="totp_btn">totp</button>
+
+        <img id="totp_qr" class="p-2 border w-100 rounded hide-totp mb-2" style="display: none;">
+        <div class="mb-3 form-floating hide-totp" style="display: none;">
+            <input class="form-control" type="text" name="totp_key" id="i_totp_key" placeholder="000000" disabled>
+            <label for="i_totp_key" class="form-label">totp key</label>
+            <div class="invalid-feedback">
+                Invalid TOTP key
+            </div>
         </div>
-        <img id="totp_qr" class="p-2 border w-100 rounded">
+        <button type="button" class="btn btn-lg btn-primary" id="totp_btn" onclick="update2FA()">submit</button>
+
     </div>
 
     <!-- General scripts -->
@@ -277,13 +284,12 @@
             button: document.getElementById("totp_btn"),
             qr: document.getElementById("totp_qr"),
             totp_key: document.getElementById("i_totp_key"),
-            text: document.getElementById("totp_text"),
+            totp_submit: document.getElementById("i_totp_submit")
         }
 
         totp_secret = null;
 
-        // Runs every time user info is updated
-        window.addEventListener("UserInfoUpdate", (e) => {
+        function setButtonText(){
             // Update totp every time the userInfo is updated
             u = JSON.parse(sessionStorage.getItem("UserInfo"))
 
@@ -291,25 +297,75 @@
                 totp_inputs.button.innerText = "Enable 2FA";
             else
                 totp_inputs.button.innerText = "Reset 2FA";
-        });
-
-        function showUpdate2FA() {
-
-            fetch("http://localhost:8082/user/totp").then(async (res) => {
-                if (res.ok){
-                    totp_secret = (await res.json()).totp_secret;
-
-                    const code = qrcode(0, 'M');
-                    code.addData(totp_secret);
-                    code.make();
-
-                    totp_inputs.qr.src = code.createDataURL(32,0);
-                }
-            });
         }
 
-        function update2FA() {
+        // Runs every time user info is updated
+        window.addEventListener("UserInfoUpdate", setButtonText);
 
+        function update2FA() {
+            if (totp_secret == null){
+                fetch("http://localhost:8082/user/totp").then(async (res) => {
+                    if (res.ok){
+                        totp_uri = (await res.json()).totp_secret;
+                        totp_secret = totp_uri.substr(totp_uri.length - 32)
+
+                        const code = qrcode(0, 'M');
+                        code.addData(totp_uri);
+                        code.make();
+
+                        totp_inputs.qr.src = code.createDataURL(32,0);
+
+                        totp_inputs.button.innerText = "Submit";
+                        totp_inputs.totp_key.disabled = false;
+
+                        // Show all hidden elements
+                        elements = document.getElementsByClassName("hide-totp");
+                        Array.from(elements).forEach(e => {
+                            e.removeAttribute("style");
+                        });
+                    }
+                });
+            }
+            else {
+                // Remove previous validation
+                totp_inputs.totp_key.classList.remove("is-invalid");
+
+                // Check if totp provided is correct
+                if (!totpKeyValidation(totp_inputs.totp_key.value)){
+                    totp_inputs.totp_key.classList.add("is-invalid");
+                    return;
+                }
+
+                // Update totp_secret of user
+                data = {
+                    "totp_secret": totp_secret,
+                    "totp_key": totp_inputs.totp_key.value,
+                };
+
+                totp_inputs.totp_key.value = "";
+                fetch("http://localhost:8082/user/totp", {
+                    method: "POST",
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: "include",
+                    body: JSON.stringify(data),
+                }).then((res) => {
+                    if (res.ok){
+                        // Return everything to original state
+                        setButtonText();
+
+                        // Hide elements
+                        elements = document.getElementsByClassName("hide-totp");
+                        Array.from(elements).forEach(e => {
+                            e.setAttribute("style", "display: none;");
+                        });
+
+                        totp_inputs.totp_key.disabled = true;
+                    }
+                    else {
+                        totp_inputs.totp_key.classList.add("is-invalid");
+                    }
+                });
+            }
         }
     </script>
 </div>

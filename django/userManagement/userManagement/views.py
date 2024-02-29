@@ -8,6 +8,7 @@ from .validation import passwordValidation, emailValidation, usernameValidation,
 from sessions.sessions import validate
 import logging
 import pyotp
+import re
 
 def updateUser(request):
     match(request.method):
@@ -19,8 +20,6 @@ def updateUser(request):
             u = validate(c)
             if (u == None):
                 return errorResponse(401, "Invalid session cookie")
-
-            # TODO: check totp
 
             # Validate body data
             data = None
@@ -181,7 +180,33 @@ def userTotp(request):
             res['Content-Type'] = 'application/json'
             res.content = f"{{\"totp_secret\": \"{pyotp.TOTP(pyotp.random_base32()).provisioning_uri(name='42 Transcendence')}\"}}"
             return res
-        # case "POST":
+
+        case "POST":
+            c = request.COOKIES.get("session")
+            if (not request.COOKIES.get("session")):
+                return errorResponse(401, "No session cookie")
+            u = validate(c)
+            if (u == None):
+                return errorResponse(401, "Invalid session cookie")
+
+            data = json.loads(request.body)
+            # Validate body
+            keys = ['totp_secret', 'totp_key']
+            if (not all(key in data for key in keys)):
+                return errorResponse(400, 'Invalid body')
+            if (not re.fullmatch("[A-Z2-7]{32}", data["totp_secret"])
+                or not re.fullmatch("[0-9]{6}", data["totp_key"])):
+                return errorResponse(400, 'Invalid secret or key')
+
+            # Validate totp
+            totp = pyotp.TOTP(data["totp_secret"])
+            if (not totp.verify(data["totp_key"])):
+                return errorResponse(401, "Invalid TOTP key")
+
+            u.totp_secret = data['totp_secret']
+            u.save()
+
+            return HttpResponse()
 
         case _:
             return errorInvalidMethod()
