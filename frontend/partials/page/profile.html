@@ -1,4 +1,4 @@
-<div i="profile">
+<div i="profile" class="py-2">
     <div id="userInfo" class="container align-center col-4 my-2 p-2 card">
         <h1 class="text-center">Profile</h1>
 
@@ -67,17 +67,20 @@
         </div>
     </div>
 
+    <!-- 2FA -->
     <div class="container card align-center col-4 p-2" id="2fa">
         <h1 class="text-center">2 Factor Authentication</h1>
-        <div class="row mx-0">
+        <div class="row mx-0 mb-2">
             <button type="button" class="btn btn-primary btn-lg" id="totp_btn">totp</button>
         </div>
+        <img id="totp_qr" class="p-2 border w-100 rounded">
     </div>
 
     <!-- General scripts -->
     <script src="scripts/userInfo.js" id="s_userInfo"></script>
     <script src="scripts/userValidation.js" id="s_userValidation"></script>
     <script src="scripts/passwordToggle.js" id="s_passwordToggle"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 
     <!-- Profile script -->
     <script>
@@ -272,7 +275,7 @@
     <script>
         totp_inputs = {
             button: document.getElementById("totp_btn"),
-            qr_canvas: document.getElementById("totp_canvas"),
+            qr: document.getElementById("totp_qr"),
             totp_key: document.getElementById("i_totp_key"),
             text: document.getElementById("totp_text"),
         }
@@ -289,7 +292,11 @@
         });
 
         function showUpdate2FA() {
+            const code = qrcode(0, 'M')
+            code.addData("Hello World!");
+            code.make()
 
+            totp_inputs.qr.src = code.createDataURL(32,0)
         }
 
         function update2FA() {
