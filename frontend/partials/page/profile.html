@@ -280,6 +280,8 @@
             text: document.getElementById("totp_text"),
         }
 
+        totp_secret = null;
+
         // Runs every time user info is updated
         window.addEventListener("UserInfoUpdate", (e) => {
             // Update totp every time the userInfo is updated
@@ -292,11 +294,18 @@
         });
 
         function showUpdate2FA() {
-            const code = qrcode(0, 'M')
-            code.addData("Hello World!");
-            code.make()
 
-            totp_inputs.qr.src = code.createDataURL(32,0)
+            fetch("http://localhost:8082/user/totp").then(async (res) => {
+                if (res.ok){
+                    totp_secret = (await res.json()).totp_secret;
+
+                    const code = qrcode(0, 'M');
+                    code.addData(totp_secret);
+                    code.make();
+
+                    totp_inputs.qr.src = code.createDataURL(32,0);
+                }
+            });
         }
 
         function update2FA() {

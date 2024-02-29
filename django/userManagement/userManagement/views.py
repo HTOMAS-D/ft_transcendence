@@ -7,6 +7,7 @@ import json
 from .validation import passwordValidation, emailValidation, usernameValidation, pfpValidation
 from sessions.sessions import validate
 import logging
+import pyotp
 
 def updateUser(request):
     match(request.method):
@@ -171,6 +172,20 @@ def getUserByUsername(request, username):
             return res
         case _:
             return errorInvalidMethod()
+
+# Generating 2fa
+def userTotp(request):
+    match(request.method):
+        case "GET":
+            res = HttpResponse()
+            res['Content-Type'] = 'application/json'
+            res.content = f"{{\"totp_secret\": \"{pyotp.TOTP(pyotp.random_base32()).provisioning_uri(name='42 Transcendence')}\"}}"
+            return res
+        # case "POST":
+
+        case _:
+            return errorInvalidMethod()
+
 
 def generateUserJson(user):
     data = {
