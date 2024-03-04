@@ -10,6 +10,8 @@ from sessions.sessions import validate
 import pyotp
 import re
 
+# TODO: Implement user registration for OAUTH
+
 # This function manages the creation, obtaining and updating of users
 def userEndpoint(request):
     match(request.method):
