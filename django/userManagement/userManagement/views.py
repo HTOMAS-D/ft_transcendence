@@ -6,10 +6,10 @@ from hashlib import sha256
 import json
 from .validation import passwordValidation, emailValidation, usernameValidation, pfpValidation
 from sessions.sessions import validate
-import logging
 import pyotp
 import re
 
+# This function manages the creation, obtaining and updating of users
 def userEndpoint(request):
     match(request.method):
         ########################################################################
@@ -179,6 +179,7 @@ def userEndpoint(request):
         case _:
             return errorInvalidMethod()
 
+# Gets a user based on an id given in the url
 def getUserById(request, user_id):
     match(request.method):
         case 'GET':
@@ -197,6 +198,7 @@ def getUserById(request, user_id):
         case _:
             return errorInvalidMethod()
 
+# Gets a user based of a username given in the url
 def getUserByUsername(request, username):
     match (request.method):
         case 'GET':
@@ -212,16 +214,33 @@ def getUserByUsername(request, username):
         case _:
             return errorInvalidMethod()
 
-# Generating 2fa
+# Function for creating totp secrets and allowing users to enable/reset totp
 def userTotp(request):
     match(request.method):
+        # Returns a TOTP URI that can be used in authenticator apps
         case "GET":
+            totp_secret = pyotp.TOTP(pyotp.random_base32())\
+                          .provisioning_uri(name='42 Transcendence')
             res = HttpResponse()
             res['Content-Type'] = 'application/json'
-            res.content = f"{{\"totp_secret\": \"{pyotp.TOTP(pyotp.random_base32()).provisioning_uri(name='42 Transcendence')}\"}}"
+            res.content = f"{{\"totp_secret\": \"{totp_secret}\"}}"
             return res
 
+        ########################################################################
+        # POST - /user/totp                                                    #
+        #                                                                      #
+        # Sets the totp secret of a logged in user from the json provided. It  #
+        # also validates a totp key provided to make sure the user correctly   #
+        # setup their authenticator.                                           #
+        # Exepected JSON:                                                      #
+        # {                                                                    #
+        #     totp_secret: string // A 32 character base 32 string             #
+        #     totp_key: string // A 6 character string that should             #
+        #                         authenticate the totp secret                 #
+        # }                                                                    #
+        ########################################################################
         case "POST":
+            # Validate cookie
             c = request.COOKIES.get("session")
             if (not request.COOKIES.get("session")):
                 return errorResponse(401, "No session cookie")
@@ -229,7 +248,13 @@ def userTotp(request):
             if (u == None):
                 return errorResponse(401, "Invalid session cookie")
 
-            data = json.loads(request.body)
+            # Parse request body
+            data = None
+            try:
+                data = json.loads(request.body)
+            except:
+                return errorResponse("Invalid body")
+
             # Validate body
             keys = ['totp_secret', 'totp_key']
             if (not all(key in data for key in keys)):
@@ -243,6 +268,7 @@ def userTotp(request):
             if (not totp.verify(data["totp_key"])):
                 return errorResponse(401, "Invalid TOTP key")
 
+            # Update user
             u.totp_secret = data['totp_secret']
             u.save()
 
