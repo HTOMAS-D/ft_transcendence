@@ -35,6 +35,8 @@
 
     <script>
         async function submit(){
+            const ENDPOINT = 'http://localhost:8082/user/'
+
             i_u = document.getElementById("i_username")
             i_e = document.getElementById("i_email")
             i_p = document.getElementById("i_password")
@@ -47,7 +49,7 @@
                 "password_validation": i_pv.value,
             }
 
-            fetch('http://localhost:8082/user/register/', {
+            fetch(ENDPOINT, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)

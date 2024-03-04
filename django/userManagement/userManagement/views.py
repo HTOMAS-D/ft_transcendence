@@ -10,9 +10,61 @@ import logging
 import pyotp
 import re
 
-def updateUser(request):
+def userEndpoint(request):
     match(request.method):
-        case 'PATCH':
+        case 'GET': # Get a user based on a cookie
+            # Validate session
+            c = request.COOKIES.get("session")
+            if (not request.COOKIES.get("session")):
+                return errorResponse(401, "No session cookie")
+            u = validate(c)
+            if (u == None):
+                return errorResponse(401, "Invalid session cookie")
+
+            # generate response
+            res = HttpResponse()
+            res['Content-Type'] = 'application/json'
+            res.content = generateUserJson(u)
+            return res
+
+        case 'POST': # Create a user
+            data = json.loads(request.body)
+            # Validate body
+            keys = ['username', 'email', 'password', 'password_validation']
+            if (not all(key in data for key in keys)):
+                return errorResponse(400, 'Invalid body')
+
+            # Check uniqueness of username & email
+            if (User.objects.filter(username=data['username']).exists()):
+                return errorResponse(409, 'Username already in use')
+            if (User.objects.filter(email=data['email']).exists()):
+                return errorResponse(409, 'Email already in use')
+
+            # Validate email & username
+            if (not usernameValidation(data['username'])):
+                return errorResponse(400, 'Invalid username')
+            if (not emailValidation(data['email'])):
+                return errorResponse(400, 'Invalid email')
+
+            # Validate password
+            if (data['password'] != data['password_validation']):
+                return errorResponse(400, 'Password and validation do not match')
+            if (not passwordValidation(data['password'])):
+                return errorResponse(400, 'Password is not strong enough')
+
+            # Create User
+            u = User.objects.create()
+            u.username = data['username']
+            u.email = data['email']
+
+            h = sha256()
+            h.update(str.encode(data['password']))
+            u.password = h.hexdigest()
+
+            u.save()
+            return HttpResponse()
+
+        case 'PATCH': # Update User information
             # Validate session
             c = request.COOKIES.get("session")
             if (not request.COOKIES.get("session")):
@@ -78,44 +130,6 @@ def updateUser(request):
             res.content = generateUserJson(u)
             return res
 
-def registerUser(request):
-    match(request.method):
-        case 'POST':
-            data = json.loads(request.body)
-            # Validate body
-            keys = ['username', 'email', 'password', 'password_validation']
-            if (not all(key in data for key in keys)):
-                return errorResponse(400, 'Invalid body')
-
-            # Check uniqueness of username & email
-            if (User.objects.filter(username=data['username']).exists()):
-                return errorResponse(409, 'Username already in use')
-            if (User.objects.filter(email=data['email']).exists()):
-                return errorResponse(409, 'Email already in use')
-
-            # Validate email & username
-            if (not usernameValidation(data['username'])):
-                return errorResponse(400, 'Invalid username')
-            if (not emailValidation(data['email'])):
-                return errorResponse(400, 'Invalid email')
-
-            # Validate password
-            if (data['password'] != data['password_validation']):
-                return errorResponse(400, 'Password and validation do not match')
-            if (not passwordValidation(data['password'])):
-                return errorResponse(400, 'Password is not strong enough')
-
-            # Create User
-            u = User.objects.create()
-            u.username = data['username']
-            u.email = data['email']
-
-            h = sha256()
-            h.update(str.encode(data['password']))
-            u.password = h.hexdigest()
-
-            u.save()
-            return HttpResponse()
         case _:
             return errorInvalidMethod()
 
@@ -139,23 +153,6 @@ def getUserById(request, user_id):
             return res
         case _:
             return errorInvalidMethod()
-
-def getUserByCookie(request):
-    # Validate session
-    c = request.COOKIES.get("session")
-    if (not request.COOKIES.get("session")):
-        return errorResponse(401, "No session cookie")
-    u = validate(c)
-    if (u == None):
-        return errorResponse(401, "Invalid session cookie")
-
-    # generate response
-    res = HttpResponse()
-    res['Content-Type'] = 'application/json'
-    res.content = generateUserJson(u)
-    return res
-
-    u = validate()
 
 def getUserByUsername(request, username):
     match (request.method):

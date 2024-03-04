@@ -208,7 +208,7 @@
                     return
 
                 // Update info on server
-                fetch("http://localhost:8082/user/update", {
+                fetch("http://localhost:8082/user/", {
                     method: "PATCH",
                     headers: {'Content-Type': 'application/json'},
                     credentials: "include",
@@ -343,7 +343,7 @@
                 };
 
                 totp_inputs.totp_key.value = "";
-                fetch("http://localhost:8082/user/totp", {
+                fetch("http://localhost:8082/user/totp/", {
                     method: "POST",
                     headers: {'Content-Type': 'application/json'},
                     credentials: "include",
