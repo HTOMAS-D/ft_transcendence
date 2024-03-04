@@ -74,6 +74,50 @@ services:
     restart: on-failure
     depends_on:
       - database
+  be_usermanagement:
+    build:
+      context: ./django
+      args:
+        - APP_NAME=userManagement
+    container_name: be_user
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=${DB_PORT}
+      - PORT=${BE_USER_PORT}
+
+      - INTRA_ID=${INTRA_ID}
+      - INTRA_SECRET=${INTRA_SECRET}
+      - INTRA_REDIRECT_URI=${INTRA_REDIRECT_URI}
+
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - ${BE_USER_PORT}:${BE_USER_PORT}
+    networks:
+      - transcendence
+    volumes:
+      - ./django/userManagement:/code
+      - ./django/share:/share
+      - ${LOG_DIR}:/logs
+    restart: on-failure
+    depends_on:
+      - database
+
+  ### Nginx
+  nginx:
+    image: nginx
+    ports:
+      - 4434:443
+      - 8000:80
+    networks:
+      - transcendence
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ${LOG_DIR}:/logs
+      - ./frontend:/website
+    restart: on-failure
 
   # grafana:
   #   image: grafana/grafana
