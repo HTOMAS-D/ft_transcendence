@@ -4,7 +4,8 @@ from general.errors import errorInvalidMethod, errorResponse
 from models.models import User
 from hashlib import sha256
 import json
-from .validation import passwordValidation, emailValidation, usernameValidation, pfpValidation
+from .validation import passwordValidation, emailValidation,\
+                        usernameValidation, pfpValidation
 from sessions.sessions import validate
 import pyotp
 import re
@@ -19,12 +20,12 @@ def userEndpoint(request):
         ########################################################################
         case 'GET': # Get a user based on a cookie
             # Validate session
-            c = request.COOKIES.get("session")
-            if (not request.COOKIES.get("session")):
-                return errorResponse(401, "No session cookie")
+            c = request.COOKIES.get('session')
+            if (not request.COOKIES.get('session')):
+                return errorResponse(401, 'No session cookie')
             u = validate(c)
             if (u == None):
-                return errorResponse(401, "Invalid session cookie")
+                return errorResponse(401, 'Invalid session cookie')
 
             # generate response
             res = HttpResponse()
@@ -71,7 +72,8 @@ def userEndpoint(request):
 
             # Validate password
             if (data['password'] != data['password_validation']):
-                return errorResponse(400, 'Password and validation do not match')
+                return errorResponse(400, 'Password and validation'
+                                          'do not match')
             if (not passwordValidation(data['password'])):
                 return errorResponse(400, 'Password is not strong enough')
 
@@ -108,38 +110,45 @@ def userEndpoint(request):
         ########################################################################
         case 'PATCH': # Update User information
             # Validate session
-            c = request.COOKIES.get("session")
-            if (not request.COOKIES.get("session")):
-                return errorResponse(401, "No session cookie")
+            c = request.COOKIES.get('session')
+            if (not request.COOKIES.get('session')):
+                return errorResponse(401, 'No session cookie')
             u = validate(c)
             if (u == None):
-                return errorResponse(401, "Invalid session cookie")
+                return errorResponse(401, 'Invalid session cookie')
 
             # Validate body data
             data = None
             try:
                 data = json.loads(request.body)
             except:
-                return errorResponse(400, "Invalid body")
+                return errorResponse(400, 'Invalid body')
 
-            keys = ['username', 'email', 'password', 'new_password', 'new_password_validation', 'pfp']
+            keys = ['username',
+                    'email',
+                    'password',
+                    'new_password',
+                    'new_password_validation',
+                    'pfp']
             if (not all(key in data for key in keys)):
-                return errorResponse(400, "Invalid body")
+                return errorResponse(400, 'Invalid body')
 
             # Check password validity
             h = sha256()
             h.update(str.encode(data['password']))
 
             if (h.hexdigest() != u.password):
-                return errorResponse(401, "Invalid credentials")
+                return errorResponse(401, 'Invalid credentials')
 
             # validate username & email
-            if (u.username != data["username"]): # If the username has been updated
+            # Checks if the username has been updated
+            if (u.username != data['username']):
                 if (not usernameValidation(data['username'])):
                     return errorResponse(400, 'Invalid username')
                 if (User.objects.filter(username=data['username']).exists()):
                     return errorResponse(409, 'Email already taken')
-            if (u.email != data["email"]): # If the username has been updated
+            # Checks if the email has been updated
+            if (u.email != data['email']):
                 if (not emailValidation(data['email'])):
                     return errorResponse(400, 'Invalid email')
                 if (User.objects.filter(email=data['email']).exists()):
@@ -150,12 +159,15 @@ def userEndpoint(request):
             u.email = data['email']
 
             # New password validation
-            # If both of these fields are left blank the password wont be updated
+            # If both fields are left blank the password wont be updated
             if (data['new_password'] or data['new_password_validation']):
-                if (data['new_password'] != data['new_password_validation']): # Check if passwords are equal
-                    return errorResponse(400, "New passwords do not match")
-                if (not passwordValidation(data['new_password'])): # Validate new password
-                    return errorResponse(400, "New password does not match requirements")
+                # Check if passwords are equal
+                if (data['new_password'] != data['new_password_validation']):
+                    return errorResponse(400, 'New passwords do not match')
+                # Validate new password
+                if (not passwordValidation(data['new_password'])):
+                    return errorResponse(400,'New password does not'
+                                             ' match requirements')
 
                 # Update user password
                 h = sha256()
@@ -165,7 +177,8 @@ def userEndpoint(request):
             # Pfp validation if the pfp has been updated
             if (u.pfp != data['pfp']):
                 if (not pfpValidation(data['pfp'])):
-                    return errorResponse(400, "PFP not in correct format, expected data:image/jpeg;base64")
+                    return errorResponse(400, 'PFP not in correct format, '\
+                                              'expected data:image/jpeg;base64')
                 u.pfp = data['pfp']
 
             # Update the database
@@ -218,12 +231,12 @@ def getUserByUsername(request, username):
 def userTotp(request):
     match(request.method):
         # Returns a TOTP URI that can be used in authenticator apps
-        case "GET":
+        case 'GET':
             totp_secret = pyotp.TOTP(pyotp.random_base32())\
                           .provisioning_uri(name='42 Transcendence')
             res = HttpResponse()
             res['Content-Type'] = 'application/json'
-            res.content = f"{{\"totp_secret\": \"{totp_secret}\"}}"
+            res.content = f'{{\"totp_secret\": \"{totp_secret}\"}}'
             return res
 
         ########################################################################
@@ -239,34 +252,34 @@ def userTotp(request):
         #                         authenticate the totp secret                 #
         # }                                                                    #
         ########################################################################
-        case "POST":
+        case 'POST':
             # Validate cookie
-            c = request.COOKIES.get("session")
-            if (not request.COOKIES.get("session")):
-                return errorResponse(401, "No session cookie")
+            c = request.COOKIES.get('session')
+            if (not request.COOKIES.get('session')):
+                return errorResponse(401, 'No session cookie')
             u = validate(c)
             if (u == None):
-                return errorResponse(401, "Invalid session cookie")
+                return errorResponse(401, 'Invalid session cookie')
 
             # Parse request body
             data = None
             try:
                 data = json.loads(request.body)
             except:
-                return errorResponse("Invalid body")
+                return errorResponse('Invalid body')
 
             # Validate body
             keys = ['totp_secret', 'totp_key']
             if (not all(key in data for key in keys)):
                 return errorResponse(400, 'Invalid body')
-            if (not re.fullmatch("[A-Z2-7]{32}", data["totp_secret"])
-                or not re.fullmatch("[0-9]{6}", data["totp_key"])):
+            if (not re.fullmatch('[A-Z2-7]{32}', data['totp_secret'])
+                or not re.fullmatch('[0-9]{6}', data['totp_key'])):
                 return errorResponse(400, 'Invalid secret or key')
 
             # Validate totp
-            totp = pyotp.TOTP(data["totp_secret"])
-            if (not totp.verify(data["totp_key"])):
-                return errorResponse(401, "Invalid TOTP key")
+            totp = pyotp.TOTP(data['totp_secret'])
+            if (not totp.verify(data['totp_key'])):
+                return errorResponse(401, 'Invalid TOTP key')
 
             # Update user
             u.totp_secret = data['totp_secret']
@@ -280,11 +293,11 @@ def userTotp(request):
 
 def generateUserJson(user):
     data = {
-        "id": user.id,
-        "intra_id": user.intra_id,
-        "username" : user.username,
-        "email": user.email,
-        "pfp": user.pfp,
-        "has_2fa" : (user.totp_secret != ""),
+        'id': user.id,
+        'intra_id': user.intra_id,
+        'username' : user.username,
+        'email': user.email,
+        'pfp': user.pfp,
+        'has_2fa' : (user.totp_secret != ''),
     }
     return json.dumps(data)
