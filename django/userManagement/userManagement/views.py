@@ -12,6 +12,11 @@ import re
 
 def userEndpoint(request):
     match(request.method):
+        ########################################################################
+        # GET - /user                                                          #
+        #                                                                      #
+        # Gets information about a logged in user via their session cookie     #
+        ########################################################################
         case 'GET': # Get a user based on a cookie
             # Validate session
             c = request.COOKIES.get("session")
@@ -27,8 +32,26 @@ def userEndpoint(request):
             res.content = generateUserJson(u)
             return res
 
-        case 'POST': # Create a user
-            data = json.loads(request.body)
+        ########################################################################
+        # POST - /user                                                         #
+        #                                                                      #
+        # Creates a user based on the json provided in the body                #
+        # Expected JSON:                                                       #
+        # {                                                                    #
+        #     username: string // Validated by usernameValidation              #
+        #     email: string // Validated by emailValidation                    #
+        #     password: string // Validated by passwordValidation              #
+        #     password_validation: string // Should be the same as `password`  #
+        # }                                                                    #
+        ########################################################################
+        case 'POST':
+            # Parse JSON
+            data = None
+            try:
+                data = json.loads(request.body)
+            except:
+                return errorResponse(400, 'Invalid body')
+
             # Validate body
             keys = ['username', 'email', 'password', 'password_validation']
             if (not all(key in data for key in keys)):
@@ -61,9 +84,28 @@ def userEndpoint(request):
             h.update(str.encode(data['password']))
             u.password = h.hexdigest()
 
+            # Update user on database
             u.save()
             return HttpResponse()
 
+        ########################################################################
+        # PATCH - /user                                                        #
+        #                                                                      #
+        # Updates a user using the json in the body                            #
+        # Expected JSON:                                                       #
+        # {                                                                    #
+        #     username: string // A users new username. Has to be unique, and  #
+        #                         is validated by usernameValidation           #
+        #     email: string // A users email. Has to be unique, and is         #
+        #                      validated by emailValidation                    #
+        #     password: string // A users current password. This is required   #
+        #                         to update any user information               #
+        #     new_password: string // Validated by passwordValidation          #
+        #     new_password_validaion: string // Should be the same as          #
+        #                                       `new_password`                 #
+        #     pfp: string // Base64 encoded JPEG string, validated by          #
+        # }                  pfpValidation                                     #
+        ########################################################################
         case 'PATCH': # Update User information
             # Validate session
             c = request.COOKIES.get("session")
@@ -84,11 +126,11 @@ def userEndpoint(request):
             if (not all(key in data for key in keys)):
                 return errorResponse(400, "Invalid body")
 
+            # Check password validity
             h = sha256()
             h.update(str.encode(data['password']))
-            pw_h = h.hexdigest()
 
-            if (pw_h != u.password):
+            if (h.hexdigest() != u.password):
                 return errorResponse(401, "Invalid credentials")
 
             # validate username & email
@@ -107,22 +149,26 @@ def userEndpoint(request):
             u.username = data['username']
             u.email = data['email']
 
-            # Password validation if necessary (these fields can be blank)
+            # New password validation
+            # If both of these fields are left blank the password wont be updated
             if (data['new_password'] or data['new_password_validation']):
-                if (data['new_password'] != data['new_password_validation']):
+                if (data['new_password'] != data['new_password_validation']): # Check if passwords are equal
                     return errorResponse(400, "New passwords do not match")
-                if (not passwordValidation(data['new_password'])):
+                if (not passwordValidation(data['new_password'])): # Validate new password
                     return errorResponse(400, "New password does not match requirements")
 
+                # Update user password
                 h = sha256()
                 h.update(str.encode(data['new_password']))
                 u.password = h.hexdigest()
 
-            # Pfp validation if required
+            # Pfp validation if the pfp has been updated
             if (u.pfp != data['pfp']):
                 if (not pfpValidation(data['pfp'])):
                     return errorResponse(400, "PFP not in correct format, expected data:image/jpeg;base64")
                 u.pfp = data['pfp']
+
+            # Update the database
             u.save()
 
             res = HttpResponse()
@@ -132,9 +178,6 @@ def userEndpoint(request):
 
         case _:
             return errorInvalidMethod()
-
-def registerOauth(request):
-    return HttpResponse("hello")
 
 def getUserById(request, user_id):
     match(request.method):
