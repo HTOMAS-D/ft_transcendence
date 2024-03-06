@@ -14,7 +14,7 @@ services:
     ports:
       - ${DB_PORT}:${DB_PORT}
     volumes:
-      - ${DB_DATA}:/var/lib/postgresql/data"
+      - ${DB_DATA}:/var/lib/postgresql/data
     networks:
       - transcendence
 
@@ -125,6 +125,10 @@ services:
 
       - PEM_PASS=${PEM_PASS}
       - SECURE_PORT=${FRONTEND_SECURE_PORT}
+
+      - BE_USER_PORT=${BE_USER_PORT}
+      - BE_AUTH_PORT=${BE_AUTH_PORT}
+      - BE_PORT=${BE_PORT}
     restart: on-failure
 
   # grafana:
