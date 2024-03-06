@@ -1,4 +1,5 @@
 # Variables
+include .env
 
 SSL_FOLDER=./nginx/ssl
 
@@ -41,10 +42,17 @@ $(SSL_FOLDER):
 # Manually invoked rules
 ssl: $(SSL_FOLDER)
 	@$(ECHO) "$(FG_CYAN)Creating new SSL key$(RESET)"
-	openssl req -x509 -newkey rsa:4096 -keyout "$(SSL_FOLDER)/key.pem" -out "$(SSL_FOLDER)/cert.pem" -sha256 -days 365
+	@openssl req -x509 -newkey rsa:4096 -keyout "$(SSL_FOLDER)/key.key" -out "$(SSL_FOLDER)/certificate.pem" -sha256 -days 365 --passout pass:$(PEM_PASS)
+	@touch $(SSL_FOLDER)/ssl_password
+	@echo $(PEM_PASS) > $(SSL_FOLDER)/ssl_password
 
 up:
 	docker compose up -d
 
 down:
 	docker compose down
+
+reload_nginx:
+	@$(ECHO) "$(FG_CYAN)Reloading nginx$(RESET)"
+	@docker exec nginx sh -c "/docker-entrypoint.d/20-envsubst-on-templates.sh" # Recompile docker file
+	@docker exec nginx service nginx reload

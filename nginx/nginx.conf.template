@@ -1,16 +1,32 @@
 events {
-    worker_connections 1024;  # Adjust the number based on your needs
+    worker_connections 1024;
 }
-
 
 # This is just a temp server for serving frontend files and should be updated
 http {
     include       /etc/nginx/mime.types;
+
     server {
         listen 80;
         server_name localhost;
+        return 301 https://$host:${SECURE_PORT}$request_uri;
+    }
+
+    server {
+        # Frontend Server stuff
+        listen 443 ssl;
+        server_name localhost;
+
+        # SSL
+        ssl_certificate /ssl/certificate.pem;
+        ssl_certificate_key /ssl/key.key;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_password_file /ssl/ssl_password;
+
         root /website/;
 
+
+        # Routes
         location / {
             add_header 'Access-Control-Allow-Origin' 'http://localhost:8082';
             add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE';
