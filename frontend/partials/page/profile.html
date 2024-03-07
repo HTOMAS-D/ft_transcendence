@@ -208,7 +208,7 @@
                     return
 
                 // Update info on server
-                fetch("http://localhost:8082/user/", {
+                fetch("/api/user/", {
                     method: "PATCH",
                     headers: {'Content-Type': 'application/json'},
                     credentials: "include",
@@ -304,7 +304,7 @@
 
         function update2FA() {
             if (totp_secret == null){
-                fetch("http://localhost:8082/user/totp").then(async (res) => {
+                fetch("/api/user/totp").then(async (res) => {
                     if (res.ok){
                         totp_uri = (await res.json()).totp_secret;
                         totp_secret = totp_uri.substr(totp_uri.length - 32)
@@ -343,7 +343,7 @@
                 };
 
                 totp_inputs.totp_key.value = "";
-                fetch("http://localhost:8082/user/totp/", {
+                fetch("/api/user/totp/", {
                     method: "POST",
                     headers: {'Content-Type': 'application/json'},
                     credentials: "include",
