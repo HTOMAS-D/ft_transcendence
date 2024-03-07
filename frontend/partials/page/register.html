@@ -1,0 +1,60 @@
+<div id="register" class="container align-center col-4">
+    <div class="mb-3" id="register-form">
+        <h1 class="text-center">Register</h1>
+
+        <div class="mb-3 form-floating">
+            <input class="form-control" type="text" name="username" id="i_username" placeholder="">
+            <label for="i_username" class="form-label">Username</label>
+        </div>
+
+        <div class="mb-3 form-floating">
+            <input class="form-control" type="email" name="email" id="i_email" placeholder="">
+            <label for="i_email" class="form-label">Email</label>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="form-floating">
+                <input class="form-control" type="password" name="password" id="i_password" placeholder="">
+                <label for="i_password" class="form-label">Password</label>
+            </div>
+            <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_password', 'i_password_show')" id="i_password_show"><i class="fa fa-eye-slash"></i></button>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="form-floating">
+                <input class="form-control" type="password" name="password_validation" id="i_password_validation" placeholder="">
+                <label for="i_password_validation" class="form-label">Repeat Password</label>
+            </div>
+            <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_password_validation', 'i_password_validation_show')" id="i_password_validation_show"><i class="fa fa-eye-slash"></i></button>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button type="button" class="btn btn-primary btn-lg" onclick="submit()">register</button>
+        </div>
+    </div>
+
+    <script>
+        async function submit(){
+            const ENDPOINT = '/api/user/'
+
+            i_u = document.getElementById("i_username")
+            i_e = document.getElementById("i_email")
+            i_p = document.getElementById("i_password")
+            i_pv = document.getElementById("i_password_validation")
+
+            data = {
+                "username": i_u.value,
+                "email": i_e.value,
+                "password": i_p.value,
+                "password_validation": i_pv.value,
+            }
+
+            fetch(ENDPOINT, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+        }
+    </script>
+    <script src="scripts/passwordToggle.js"></script>
+</div>
