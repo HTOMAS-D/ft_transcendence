@@ -1,4 +1,5 @@
 <div id="login">
+    <div id="reserved_totp"></div>
     <div class="container align-center card col-4 my-2 p-2 card">
         <h1 class="text-center">Login</h1>
 
@@ -16,7 +17,8 @@
             <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_password', 'i_password_show')" id="i_password_show"><i class="fa fa-eye-slash"></i></button>
         </div>
 
-        <button type="button" class="btn btn-lg btn-primary" onclick="SubmitLogin()">Login</button>
+        <button type="button" class="btn btn-lg btn-primary mb-2" onclick="SubmitLogin()">Login</button>
+        <button type="button" class="btn btn-lg btn-primary mb-2" data-bs-toggle="modal", data-bs-target="#totp_modal">Test TOTP modal</button>
 
         <hr>
 
@@ -32,6 +34,14 @@
     </div>
 
     <script src="/scripts/passwordToggle.js"></script>
+
+    <script>
+        async function init(){
+            p = await loadPartial("/partials/totp.html");
+            renderPartial(p, document.getElementById("reserved_totp"));
+        }
+        init()
+    </script>
 
     <script>
         let inputs = {
