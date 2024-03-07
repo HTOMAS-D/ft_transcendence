@@ -5,7 +5,7 @@
         <!-- Normal login -->
         <div class="mb-3 form-floating">
             <input class="form-control" type="text" name="username" id="i_username" placeholder="">
-            <label for="i_username" class="form-label">Username</label>
+            <label for="i_username" class="form-label">Username/Email</label>
         </div>
 
         <div class="input-group mb-3">
@@ -16,7 +16,7 @@
             <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_password', 'i_password_show')" id="i_password_show"><i class="fa fa-eye-slash"></i></button>
         </div>
 
-        <button type="button" class="btn btn-lg btn-primary">Login</button>
+        <button type="button" class="btn btn-lg btn-primary" onclick="SubmitLogin()">Login</button>
 
         <hr>
 
@@ -32,4 +32,31 @@
     </div>
 
     <script src="/scripts/passwordToggle.js"></script>
+
+    <script>
+        let inputs = {
+            username: document.getElementById("i_username"),
+            password: document.getElementById("i_password"),
+        }
+
+        function SubmitLogin(){
+            data = {
+                login: inputs.username.value,
+                password: inputs.password.value
+            }
+
+            console.log(data);
+
+            fetch("/api/auth/login/", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data),
+            }).then((res) => {
+                if (res.ok)
+                {
+                    console.log("Successful login!");
+                }
+            })
+        }
+    </script>
 </div>
