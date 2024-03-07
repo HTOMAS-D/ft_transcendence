@@ -115,7 +115,6 @@ services:
     networks:
       - transcendence
     volumes:
-      # - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf
       - ./nginx/nginx.conf.template:/etc/nginx/templates/nginx.conf.template
       - ./nginx/ssl:/ssl
       - ${LOG_DIR}:/logs
@@ -130,6 +129,10 @@ services:
       - BE_AUTH_PORT=${BE_AUTH_PORT}
       - BE_PORT=${BE_PORT}
     restart: on-failure
+    depends_on:
+      - be_main
+      - be_usermanagement
+      - be_authentication
 
   # grafana:
   #   image: grafana/grafana
