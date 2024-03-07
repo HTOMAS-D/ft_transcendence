@@ -1,6 +1,35 @@
 <div id="login">
-    <p>login</p>
-    <script>
-        console.log("Hello World")
-    </script>
+    <div class="container align-center card col-4 my-2 p-2 card">
+        <h1 class="text-center">Login</h1>
+
+        <!-- Normal login -->
+        <div class="mb-3 form-floating">
+            <input class="form-control" type="text" name="username" id="i_username" placeholder="">
+            <label for="i_username" class="form-label">Username</label>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="form-floating">
+                <input class="form-control" type="password" name="password" id="i_password" placeholder="">
+                <label for="i_password" class="form-label">Password</label>
+            </div>
+            <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_password', 'i_password_show')" id="i_password_show"><i class="fa fa-eye-slash"></i></button>
+        </div>
+
+        <button type="button" class="btn btn-lg btn-primary">Login</button>
+
+        <hr>
+
+        <!-- OAUTH login -->
+
+        <a href="https://api.intra.42.fr/oauth/authorize?client_id=ENV_INTRA_ID&redirect_uri=ENV_INTRA_REDIRECT&response_type=code" type="button" class="btn btn-lg btn-primary bg-black">
+            <div class="mb-0">
+                <img src="https://42.fr/wp-content/uploads/2021/05/42-Final-sigle-seul.svg"
+                ><div class="vr mx-2 h-100 b"></div
+                ><span>Login with 42</span>
+            </div>
+        </a>
+    </div>
+
+    <script src="/scripts/passwordToggle.js"></script>
 </div>

@@ -128,6 +128,9 @@ services:
       - BE_USER_PORT=${BE_USER_PORT}
       - BE_AUTH_PORT=${BE_AUTH_PORT}
       - BE_PORT=${BE_PORT}
+
+      - INTRA_ID=${INTRA_ID}
+      - INTRA_REDIRECT_URI=${INTRA_REDIRECT_URI}
     restart: on-failure
     depends_on:
       - be_main
