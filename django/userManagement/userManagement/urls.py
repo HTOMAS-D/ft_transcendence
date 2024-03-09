@@ -19,7 +19,7 @@ from .views import getUserById, getUserByUsername, userTotp, userEndpoint
 
 urlpatterns = [
     path('user/', userEndpoint),
-    path('user/totp', userTotp),
+    path('user/totp/', userTotp),
     path('user/<int:user_id>/', getUserById),
     path('user/<str:username>/', getUserByUsername),
 ]

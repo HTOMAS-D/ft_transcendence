@@ -9,6 +9,7 @@ from .validation import passwordValidation, emailValidation,\
 from sessions.sessions import validate
 import pyotp
 import re
+import logging
 
 # TODO: Implement user registration for OAUTH
 
@@ -231,6 +232,7 @@ def getUserByUsername(request, username):
 
 # Function for creating totp secrets and allowing users to enable/reset totp
 def userTotp(request):
+    logging.log(3, "IN USERTOTP")
     match(request.method):
         # Returns a TOTP URI that can be used in authenticator apps
         case 'GET':

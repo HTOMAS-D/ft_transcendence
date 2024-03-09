@@ -6,8 +6,11 @@ function setUserInfo(body) {
 
 function getUserInfo()
 {
-    return fetch("http://localhost:8082/user", {credentials: "include"}).then((res) => {
-        return res.json();
+    return fetch("/api/user/", {credentials: "include"}).then((res) => {
+        if (res.ok)
+            return res.json();
+        else
+            return Promise.reject("response error");
     }).then((data) => {
         setUserInfo(JSON.stringify(data));
     });

@@ -17,6 +17,10 @@
             <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_password', 'i_password_show')" id="i_password_show"><i class="fa fa-eye-slash"></i></button>
         </div>
 
+        <div class="text-danger mb-2 d-none" id="err_text">
+            Invalid Credentials
+        </div>
+
         <button type="button" class="btn btn-lg btn-primary mb-2" onclick="SubmitLogin()">Login</button>
         <button type="button" class="btn btn-lg btn-primary mb-2" data-bs-toggle="modal", data-bs-target="#totp_modal">Test TOTP modal</button>
 
@@ -34,6 +38,7 @@
     </div>
 
     <script src="/scripts/passwordToggle.js"></script>
+    <script src="/scripts/userInfo.js"></script>
 
     <script>
         async function init(){
@@ -47,16 +52,19 @@
         let inputs = {
             username: document.getElementById("i_username"),
             password: document.getElementById("i_password"),
+            err_text: document.getElementById("err_text")
         }
 
         function SubmitLogin(){
             data = {
                 login: inputs.username.value,
                 password: inputs.password.value
-            }
+            };
 
-            console.log(data);
+            // reset error text
+            inputs.err_text.classList.add("d-none");
 
+            // login
             fetch("/api/auth/login/", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -64,9 +72,24 @@
             }).then((res) => {
                 if (res.ok)
                 {
+                    // fetch user info
+                    window.addEventListener("UserInfoUpdate", (e) => {
+                        ui = JSON.parse(sessionStorage.getItem("UserInfo"));
+                        console.log(ui);
+                        if (ui.has_2fa)
+                        {
+                            totp_modal.show();
+                        }
+                    }, {once: true});
+                    getUserInfo()
                     console.log("Successful login!");
                 }
-            })
+                else
+                {
+                    // Add error text
+                    inputs.err_text.classList.remove("d-none");
+                }
+            });
         }
     </script>
 </div>

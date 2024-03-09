@@ -15,14 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from oauth.views import oauth_test, oauth_callback
-from login.views import login_test, authenticate_user
+from oauth.views import oauth_callback
+from login.views import authenticate_user
 from totp.views import authenticate_totp
 
 urlpatterns = [
-    path('oauth/test', oauth_test),
     path('oauth/callback', oauth_callback),
-    path('login/test', login_test),
     path('login/', authenticate_user),
     path('totp/', authenticate_totp)
 ]
