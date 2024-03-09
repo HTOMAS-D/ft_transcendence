@@ -28,12 +28,6 @@ http {
 
         # Routes
         location / {
-            add_header 'Access-Control-Allow-Origin' 'http://localhost:8082';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE';
-            add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization';
-            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
-            add_header 'Access-Control-Allow-Credentials' 'true';
-
             # sub_filters for env variables
             sub_filter_once off;
             sub_filter "ENV_INTRA_ID" "${INTRA_ID}";
@@ -43,15 +37,15 @@ http {
             try_files $uri /index.html;   # Handle URL requests
         }
 
-        location /api/user/ {
-            proxy_pass http://be_user:${BE_USER_PORT}/user/;
-            proxy_set_header Host $host;
+        location /api/user {
+            proxy_pass http://be_user:${BE_USER_PORT}/user;
+            proxy_set_header Host $http_host;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
         }
 
-        location /api/auth/ {
-            proxy_pass http://be_authentication:${BE_AUTH_PORT}/;
+        location /api/auth {
+            proxy_pass http://be_authentication:${BE_AUTH_PORT};
             proxy_set_header Host $host;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
