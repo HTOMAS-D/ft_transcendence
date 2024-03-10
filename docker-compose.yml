@@ -14,7 +14,7 @@ services:
     ports:
       - ${DB_PORT}:${DB_PORT}
     volumes:
-      - ${DB_DATA}:/var/lib/postgresql/data"
+      - ${DB_DATA}:/var/lib/postgresql/data
     networks:
       - transcendence
 
@@ -74,6 +74,68 @@ services:
     restart: on-failure
     depends_on:
       - database
+  be_usermanagement:
+    build:
+      context: ./django
+      args:
+        - APP_NAME=userManagement
+    container_name: be_user
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=${DB_PORT}
+      - PORT=${BE_USER_PORT}
+
+      - INTRA_ID=${INTRA_ID}
+      - INTRA_SECRET=${INTRA_SECRET}
+      - INTRA_REDIRECT_URI=${INTRA_REDIRECT_URI}
+
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - ${BE_USER_PORT}:${BE_USER_PORT}
+    networks:
+      - transcendence
+    volumes:
+      - ./django/userManagement:/code
+      - ./django/share:/share
+      - ${LOG_DIR}:/logs
+    restart: on-failure
+    depends_on:
+      - database
+
+  ### Nginx
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - ${FRONTEND_SECURE_PORT}:443
+      - ${FRONTEND_PORT}:80
+    networks:
+      - transcendence
+    volumes:
+      - ./nginx/nginx.conf.template:/etc/nginx/templates/nginx.conf.template
+      - ./nginx/ssl:/ssl
+      - ${LOG_DIR}:/logs
+      - ./frontend:/website
+    environment:
+      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/
+
+      - PEM_PASS=${PEM_PASS}
+      - SECURE_PORT=${FRONTEND_SECURE_PORT}
+
+      - BE_USER_PORT=${BE_USER_PORT}
+      - BE_AUTH_PORT=${BE_AUTH_PORT}
+      - BE_PORT=${BE_PORT}
+
+      - INTRA_ID=${INTRA_ID}
+      - INTRA_REDIRECT_URI=${INTRA_REDIRECT_URI}
+    restart: on-failure
+    depends_on:
+      - be_main
+      - be_usermanagement
+      - be_authentication
 
   # grafana:
   #   image: grafana/grafana

@@ -1,0 +1,52 @@
+<div id="totp_input">
+    <div class="modal" tabindex="-1" id="totp_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title align-center">2-FA verification</h3>
+                </div>
+                <div class="modal-body">
+                    <input class="form-control" placeholder="000000" id="i_totp_key">
+                    <div class="text-danger" id="totp_error_text" style="display: none;">Invalid TOTP key</div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-lg btn-primary w-100" onclick="SubmitTotp()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/scripts/userValidation.js"></script>
+    <script>
+        totp_modal = new bootstrap.Modal("#totp_modal");
+
+        // Submits totp key and updates session
+        function SubmitTotp(){
+            t = document.getElementById("i_totp_key");
+            err_t = document.getElementById("totp_error_text");
+            key = t.value;
+
+            // Reset error text
+            err_t.style = "display: none;"
+
+            fetch("/api/auth/totp/", {
+                method: "POST",
+                headers: {"Content-Type": "application/javascript"},
+                body: JSON.stringify({"totp_token": key}),
+            }).then((res) => {
+                if (res.ok)
+                {
+                    document.getElementById("totp_error_text").style = "display: none;"
+
+                    // Update session token
+                    fetch("/api/auth/login/", {method: "PATCH"}).then((res) => {
+                        totp_modal.hide();
+                    });
+                }
+                else {
+                    err_t.style = "";
+                }
+            })
+        }
+    </script>
+</div>

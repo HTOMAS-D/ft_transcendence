@@ -1,0 +1,56 @@
+events {
+    worker_connections 1024;
+}
+
+# This is just a temp server for serving frontend files and should be updated
+http {
+    include       /etc/nginx/mime.types;
+
+    server {
+        listen 80;
+        server_name localhost;
+        return 301 https://$host:${SECURE_PORT}$request_uri;
+    }
+
+    server {
+        # Frontend Server stuff
+        listen 443 ssl;
+        server_name localhost;
+
+        # SSL
+        ssl_certificate /ssl/certificate.pem;
+        ssl_certificate_key /ssl/key.key;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_password_file /ssl/ssl_password;
+
+        root /website/;
+
+
+        # Routes
+        location / {
+            # sub_filters for env variables
+            sub_filter_once off;
+            sub_filter "ENV_INTRA_ID" "${INTRA_ID}";
+            sub_filter "ENV_INTRA_REDIRECT" "${INTRA_REDIRECT_URI}";
+
+            index index.html;            # Specify the default file (e.g., index.html)
+            try_files $uri /index.html;   # Handle URL requests
+        }
+
+        location /api/user {
+            rewrite ^/api/user(.*)$ /user$1 break;
+            proxy_pass http://be_user:${BE_USER_PORT}/;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        location /api/auth {
+            rewrite ^/api/auth/(.*)$ /$1 break;
+            proxy_pass http://be_authentication:${BE_AUTH_PORT}/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}

@@ -1,0 +1,94 @@
+<div id="login">
+    <div id="reserved_totp"></div>
+    <div class="container align-center card col-4 my-2 p-2 card">
+        <h1 class="text-center">Login</h1>
+
+        <!-- Normal login -->
+        <div class="mb-3 form-floating">
+            <input class="form-control" type="text" name="username" id="i_username" placeholder="">
+            <label for="i_username" class="form-label">Username/Email</label>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="form-floating">
+                <input class="form-control" type="password" name="password" id="i_password" placeholder="">
+                <label for="i_password" class="form-label">Password</label>
+            </div>
+            <button type="button" class="btn btn-outline-secondary border-light-subtle" onclick="passwordToggle('i_password', 'i_password_show')" id="i_password_show"><i class="fa fa-eye-slash"></i></button>
+        </div>
+
+        <div class="text-danger mb-2 d-none" id="err_text">
+            Invalid Credentials
+        </div>
+
+        <button type="button" class="btn btn-lg btn-primary mb-2" onclick="SubmitLogin()">Login</button>
+
+        <hr>
+
+        <!-- OAUTH login -->
+
+        <a href="https://api.intra.42.fr/oauth/authorize?client_id=ENV_INTRA_ID&redirect_uri=ENV_INTRA_REDIRECT&response_type=code" type="button" class="btn btn-lg btn-primary bg-black">
+            <div class="mb-0">
+                <img src="https://42.fr/wp-content/uploads/2021/05/42-Final-sigle-seul.svg"
+                ><div class="vr mx-2 h-100 b"></div
+                ><span>Login with 42</span>
+            </div>
+        </a>
+    </div>
+
+    <script src="/scripts/passwordToggle.js"></script>
+    <script src="/scripts/userInfo.js"></script>
+
+    <script>
+        async function init(){
+            p = await loadPartial("/partials/totp.html");
+            renderPartial(p, document.getElementById("reserved_totp"));
+        }
+        init()
+    </script>
+
+    <script>
+        let inputs = {
+            username: document.getElementById("i_username"),
+            password: document.getElementById("i_password"),
+            err_text: document.getElementById("err_text")
+        }
+
+        function SubmitLogin(){
+            data = {
+                login: inputs.username.value,
+                password: inputs.password.value
+            };
+
+            // reset error text
+            inputs.err_text.classList.add("d-none");
+
+            // login
+            fetch("/api/auth/login/", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data),
+            }).then((res) => {
+                if (res.ok)
+                {
+                    // fetch user info
+                    window.addEventListener("UserInfoUpdate", (e) => {
+                        ui = JSON.parse(sessionStorage.getItem("UserInfo"));
+                        console.log(ui);
+                        if (ui.has_2fa)
+                        {
+                            totp_modal.show();
+                        }
+                    }, {once: true});
+                    getUserInfo()
+                    console.log("Successful login!");
+                }
+                else
+                {
+                    // Add error text
+                    inputs.err_text.classList.remove("d-none");
+                }
+            });
+        }
+    </script>
+</div>
