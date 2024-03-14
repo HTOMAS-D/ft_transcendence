@@ -46,5 +46,43 @@
             ctx.ellipse(pos.x, pos.y, BALL_RAD, BALL_RAD, 0, 0, Math.PI * 2);
             ctx.fill();
         }
+
+        // Player movement
+        // p1_move_dir = 0;
+
+        window.addEventListener("keydown", (e) => {
+            switch (e.code) {
+                case "KeyW":
+                    p1_pos -= .05;
+                    if (p1_pos < 0)
+                        p1_pos = 0;
+                    drawFrame()
+                    break;
+
+                case "KeyS":
+                    p1_pos += .05;
+                    if (p1_pos > 1)
+                        p1_pos = 1;
+                    drawFrame();
+                    break;
+                case "ArrowUp":
+                    p2_pos -= .05;
+                    if (p2_pos < 0)
+                        p2_pos = 0;
+                    drawFrame()
+                    break;
+
+                case "ArrowDown":
+                    p2_pos += .05;
+                    if (p2_pos > 1)
+                        p2_pos = 1;
+                    drawFrame();
+                    break;
+
+                default:
+                    console.log(e.code)
+                    break;
+            }
+        });
     </script>
 </div>
