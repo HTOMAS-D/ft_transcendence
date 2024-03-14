@@ -95,16 +95,9 @@
             ball_pos.y += ball_dir.y * BALL_SPEED;
 
             // If the ball bounces against the left or right wall
-            if (ball_pos.x > 1){
-                ball_pos.x = 1 - (ball_pos.x - 1)
-                ball_dir.x = -1;
-                // TODO: Check collision with player
-                // TODO: update y direction
-            }
-            else if (ball_pos.x < 0)
-            {
-                ball_pos.x = -ball_pos.x;
-                ball_dir.x = 1;
+            if (ball_pos.x < 0 || ball_pos.x > 1){
+                ball_pos.x.clamp(0,1)
+                ball_dir.x = -ball_dir.x;
                 // TODO: Check collision with player
                 // TODO: update y direction
             }
