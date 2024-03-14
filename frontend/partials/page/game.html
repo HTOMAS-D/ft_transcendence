@@ -85,7 +85,7 @@
         });
 
 
-        let ball_dir = {x: 1, y: .5}
+        let ball_dir = {x: -1, y: 0}
         const BALL_SPEED = .02;
 
         function update_game()
@@ -111,6 +111,11 @@
 
             // Draw new frame
             drawFrame();
+        }
+
+        function reset_round(){
+            ball_dir = {x: -1, y: 0};
+            ball_pos = {x: 0, y: 0};
         }
 
         TICK_SPEED = 50
