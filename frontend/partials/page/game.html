@@ -1,0 +1,50 @@
+<div id="game">
+    <canvas id="pong" width=640 height=640></canvas>
+
+    <script>
+        const canvas = document.getElementById("pong");
+        const ctx = canvas.getContext("2d");
+
+        // The player paddle position, should be between 0-1
+        let p1_pos = 0;
+        let p2_pos = 0;
+
+        // Ball position between (0-1, 0-1)
+        let ball_pos = {x: 0, y: 0};
+
+        // These are all sizes in pixels
+        const PLAYER_WIDTH = 7; // The width of a paddle
+        const PLAYER_HEIGHT = 50; // The height of a paddle
+        const OFFSET = 3; // make the walls slightly offset
+        const BALL_RAD = 5; // The radius of the ball
+
+        function drawFrame()
+        {
+            const BG_COL = "#000000";
+            const FG_COL = "#FFFFFF";
+
+            // Reset background
+            ctx.fillStyle = BG_COL;
+            ctx.fillRect(0,0, canvas.width, canvas.height);
+
+
+            ctx.fillStyle = FG_COL;
+
+            // Draw players
+            pos = (canvas.height - (2 * OFFSET) - PLAYER_HEIGHT) * p1_pos + OFFSET + (PLAYER_HEIGHT / 2);
+            ctx.fillRect(OFFSET, pos - PLAYER_HEIGHT / 2, PLAYER_WIDTH, PLAYER_HEIGHT);
+
+            pos = (canvas.height - (2 * OFFSET) - PLAYER_HEIGHT) * p2_pos + OFFSET + (PLAYER_HEIGHT / 2);
+            ctx.fillRect(canvas.width - OFFSET, pos - PLAYER_HEIGHT / 2, -PLAYER_WIDTH, PLAYER_HEIGHT);
+
+            // Draw ball
+            pos = {
+                x: OFFSET + PLAYER_WIDTH + BALL_RAD + ((canvas.width -  (OFFSET * 2) - (PLAYER_WIDTH * 2) - (BALL_RAD * 2)) * ball_pos.x),
+                y: OFFSET + BALL_RAD + ((canvas.width -  (OFFSET * 2) - (BALL_RAD * 2)) * ball_pos.y)
+            }
+            ctx.beginPath();
+            ctx.ellipse(pos.x, pos.y, BALL_RAD, BALL_RAD, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    </script>
+</div>
