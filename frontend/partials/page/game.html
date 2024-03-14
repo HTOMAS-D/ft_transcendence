@@ -99,7 +99,11 @@
                 ball_pos.x.clamp(0,1)
                 ball_dir.x = -ball_dir.x;
                 // TODO: Check collision with player
-                // TODO: update y direction
+
+                // Give the y a random direction
+                r = Math.random();
+                r_dir = (r*r*(3.0 - 2.0 * r)).clamp(.3,1);
+                ball_dir.y = ball_dir > 0 ? r_dir : -r_dir;
             }
 
             // If the ball bounces against the top or bottom wall
