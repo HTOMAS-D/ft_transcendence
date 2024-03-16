@@ -6,15 +6,14 @@
         const ctx = canvas.getContext("2d");
 
         // The player paddle position, should be between 0-1
-        let p1_pos = 0;
-        let p2_pos = 0;
+        let p1_pos = .5;
+        let p2_pos = .5;
 
         // Ball position between (0-1, 0-1)
         let ball_pos = {x: .5, y: .5};
 
-        // These are all sizes in pixels
-        const PLAYER_WIDTH = 7; // The width of a paddle
-        const PLAYER_HEIGHT = 50; // The height of a paddle
+        const PLAYER_WIDTH = 7; // The width of a paddle in pixels
+        const PLAYER_HEIGHT = .1; // The height of a paddle in fraction
         const OFFSET = 3; // make the walls slightly offset
         const BALL_RAD = 5; // The radius of the ball
 
@@ -34,11 +33,12 @@
             ctx.fillStyle = FG_COL;
 
             // Draw players
-            pos = (canvas.height - (2 * OFFSET) - PLAYER_HEIGHT) * p1_pos + OFFSET + (PLAYER_HEIGHT / 2);
-            ctx.fillRect(OFFSET, pos - PLAYER_HEIGHT / 2, PLAYER_WIDTH, PLAYER_HEIGHT);
+            const ph_pixels = (canvas.height - (2 * OFFSET)) * PLAYER_HEIGHT;
+            pos = (canvas.height - (2 * OFFSET) - ph_pixels) * p1_pos + OFFSET + (ph_pixels / 2);
+            ctx.fillRect(OFFSET, pos - ph_pixels / 2, PLAYER_WIDTH, ph_pixels);
 
-            pos = (canvas.height - (2 * OFFSET) - PLAYER_HEIGHT) * p2_pos + OFFSET + (PLAYER_HEIGHT / 2);
-            ctx.fillRect(canvas.width - OFFSET, pos - PLAYER_HEIGHT / 2, -PLAYER_WIDTH, PLAYER_HEIGHT);
+            pos = (canvas.height - (2 * OFFSET) - ph_pixels) * p2_pos + OFFSET + (ph_pixels / 2);
+            ctx.fillRect(canvas.width - OFFSET, pos - ph_pixels / 2, -PLAYER_WIDTH, ph_pixels);
 
             // Draw ball
             pos = {
@@ -91,6 +91,7 @@
         let ball_dir = {x: -1, y: 0}
         const BALL_SPEED = .02;
         const PLAYER_SPEED = .04;
+        const SAFE_MARGIN = .01; // A little extra size to the paddle to make it seem more fair
 
         function update_game()
         {
@@ -102,8 +103,24 @@
             if (ball_pos.x < 0 || ball_pos.x > 1){
                 ball_pos.x = ball_pos.x.clamp(0,1)
                 ball_dir.x = -ball_dir.x;
-                // TODO: Check collision with player
 
+                // TODO: Check collision with player
+                if (ball_pos.x < 0.5) {// If the ball is on p1 side
+                    if (!(ball_pos.y <= p1_pos + (PLAYER_HEIGHT / 2) + SAFE_MARGIN &&
+                          ball_pos.y >= p1_pos - (PLAYER_HEIGHT / 2) - SAFE_MARGIN)){
+                            console.log("p2 scored");
+                            reset_round();
+                            return;
+                        }
+                }
+                else { // If the ball is on p2 side
+                    if (!(ball_pos.y <= p2_pos + (PLAYER_HEIGHT / 2) + SAFE_MARGIN &&
+                          ball_pos.y >= p2_pos - (PLAYER_HEIGHT / 2) - SAFE_MARGIN)){
+                            console.log("p1 scored");
+                            reset_round();
+                            return;
+                        }
+                }
                 // Give the y a random direction
                 r = Math.random();
                 r_dir = (r*r*(3.0 - 2.0 * r)).clamp(.3,1);
@@ -129,7 +146,9 @@
 
         function reset_round(){
             ball_dir = {x: -1, y: 0};
-            ball_pos = {x: 0, y: 0};
+            ball_pos = {x: .5, y: .5};
+            p1_pos = .5;
+            p2_pos = .5;
         }
 
         TICK_SPEED = 50
