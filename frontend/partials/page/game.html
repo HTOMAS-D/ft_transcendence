@@ -51,35 +51,38 @@
         }
 
         // Player movement
-        // p1_move_dir = 0;
+        p1_move_dir = 0;
+        p2_move_dir = 0;
 
         window.addEventListener("keydown", (e) => {
             switch (e.code) {
                 case "KeyW":
-                    p1_pos -= .05;
-                    if (p1_pos < 0)
-                        p1_pos = 0;
+                    p1_move_dir = -1;
                     break;
 
                 case "KeyS":
-                    p1_pos += .05;
-                    if (p1_pos > 1)
-                        p1_pos = 1;
+                    p1_move_dir = 1;
                     break;
                 case "ArrowUp":
-                    p2_pos -= .05;
-                    if (p2_pos < 0)
-                        p2_pos = 0;
+                    p2_move_dir = -1;
                     break;
 
                 case "ArrowDown":
-                    p2_pos += .05;
-                    if (p2_pos > 1)
-                        p2_pos = 1;
+                    p2_move_dir = 1;
+                    break;
+            }
+        });
+
+        window.addEventListener("keyup", (e) => {
+            switch (e.code) {
+                case "KeyS":
+                case "KeyW":
+                    p1_move_dir = 0;
                     break;
 
-                default:
-                    console.log(e.code)
+                case "ArrowDown":
+                case "ArrowUp":
+                    p2_move_dir = 0;
                     break;
             }
         });
@@ -87,6 +90,7 @@
 
         let ball_dir = {x: -1, y: 0}
         const BALL_SPEED = .02;
+        const PLAYER_SPEED = .04;
 
         function update_game()
         {
@@ -96,7 +100,7 @@
 
             // If the ball bounces against the left or right wall
             if (ball_pos.x < 0 || ball_pos.x > 1){
-                ball_pos.x.clamp(0,1)
+                ball_pos.x = ball_pos.x.clamp(0,1)
                 ball_dir.x = -ball_dir.x;
                 // TODO: Check collision with player
 
@@ -109,9 +113,15 @@
             // If the ball bounces against the top or bottom wall
             if (ball_pos.y < 0 || ball_pos.y > 1)
             {
-                ball_pos.y.clamp(0,1);
+                ball_pos.y = ball_pos.y.clamp(0,1);
                 ball_dir.y = -ball_dir.y;
             }
+
+            // Move player
+            p1_pos += p1_move_dir * PLAYER_SPEED;
+            p1_pos  = p1_pos.clamp(0,1);
+            p2_pos += p2_move_dir * PLAYER_SPEED;
+            p2_pos = p2_pos.clamp(0,1);
 
             // Draw new frame
             drawFrame();
