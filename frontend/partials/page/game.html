@@ -8,6 +8,8 @@
         // The player paddle position, should be between 0-1
         let p1_pos = .5;
         let p2_pos = .5;
+        let p1_score = 0;
+        let p2_score = 0;
 
         // Ball position between (0-1, 0-1)
         let ball_pos = {x: .5, y: .5};
@@ -48,6 +50,10 @@
             ctx.beginPath();
             ctx.ellipse(pos.x, pos.y, BALL_RAD, BALL_RAD, 0, 0, Math.PI * 2);
             ctx.fill();
+
+            ctx.font = "20px Arial";
+            ctx.fillText(p1_score, canvas.width / 2 - 45, 30);
+            ctx.fillText(p2_score, canvas.width / 2 + 10, 30);
         }
 
         // Player movement
@@ -104,11 +110,10 @@
                 ball_pos.x = ball_pos.x.clamp(0,1)
                 ball_dir.x = -ball_dir.x;
 
-                // TODO: Check collision with player
                 if (ball_pos.x < 0.5) {// If the ball is on p1 side
                     if (!(ball_pos.y <= p1_pos + (PLAYER_HEIGHT / 2) + SAFE_MARGIN &&
                           ball_pos.y >= p1_pos - (PLAYER_HEIGHT / 2) - SAFE_MARGIN)){
-                            console.log("p2 scored");
+                            p2_score++;
                             reset_round();
                             return;
                         }
@@ -116,7 +121,7 @@
                 else { // If the ball is on p2 side
                     if (!(ball_pos.y <= p2_pos + (PLAYER_HEIGHT / 2) + SAFE_MARGIN &&
                           ball_pos.y >= p2_pos - (PLAYER_HEIGHT / 2) - SAFE_MARGIN)){
-                            console.log("p1 scored");
+                            p1_score++;
                             reset_round();
                             return;
                         }
